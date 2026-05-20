@@ -1,0 +1,198 @@
+\section{Background}
+\label{sec:background}
+
+Aiming for a representative study, in our experiments, we adopt Tendermint \cite{buchman2016tendermint}, a blockchain consensus algorithm derived from PBFT \cite{castro1999practical}.   In the following we introduce the system model considered, comment on Tendermint and survey related work.
+
+\subsection{System Model}
+
+The system model is close to that of a wide class of byzantine fault-tolerant consensus algorithms.  
+We consider the distributed system as composed by an unbounded set of client processes that submit transactions (or operations) to a different, bounded set $\Pi$ of $N$ nodes, or server processes.   
+According to Tendermint, a subset of the nodes are validators, which execute the consensus protocol. 
+For simplicity, here we consider that all nodes in $\Pi$ act as validators.    The set of nodes is dynamic and known by all nodes.  
+
+%Also, as we aim to understand the consensus performance under different proposers, we consider that client demand is maximal, i.e., whenever a node becomes proposer it is already provided with client transactions to immediately fill and send it's proposal.
+
+Nodes communicate by message passing. The
+system is asynchronous: messages may experience arbitrarily
+large (but finite) delays and there is no bound on relative
+process speeds.
+%
+To ensure progress, Tendermint assumes the partial synchrony model: the system is initially asynchronous and at an unknown moment, but eventually, reaches the Global Stabilization Time, becoming synchronous.
+
+Up to $f < N/3$ nodes can deviate from their specification, being called faulty or Byzantine, the others are said to be honest or correct.   
+%
+Cryptographic techniques are used, with adversaries not having (with high probability) the computational power to subvert them.
+
+
+\subsection{Tendermint}
+\label{tenderback}
+
+Tendermint consensus operates through three sequential phases---propose, prevote, and precommit---which functionally correspond to the pre-prepare, prepare, and commit stages of the Practical Byzantine Fault Tolerance (PBFT) algorithm. A primary distinction in Tendermint is the implementation of a rotating proposer mechanism; by utilizing a round-robin approach where each node proposes for only a single instance, the network mitigates censorship\cite{wahrstatter2024blockchain}. % and ensures that an honest proposer eventually assumes leadership. 
+
+Furthermore, unlike the permissioned nature of PBFT, Tendermint is designed for permissionless environments where unknown participants can join. To protect against Sybil attacks\cite{douceur2002sybil}, where a malicious actor might otherwise flood the network with nodes to gain control, the protocol integrates a Proof of Stake (PoS) mechanism. %This economic barrier shifts the security assumption from a count of nodes to a distribution of wealth: the system remains secure as long as less than one-third of the total staked tokens are held by Byzantine actors. 
+Participants receive rewards for consensus participation, while detected malicious behavior results in the destruction or reduction of their stake via slashing. This design effectively increases the cost of subversion, making it expensive for an adversary to acquire a quorum.
+
+\subsection{Related Work}
+
+Table \ref{related} summarizes the related literature and contrasts existing solutions with our proposed approach. We categorize these algorithms based on seven key design dimensions: 
+(I) \textbf{Score Representation:} whether node scores are continuous (allowing fine-grained differentiation) or discrete (grouping nodes into classes); 
+(II) \textbf{Committee Eviction:} whether nodes are removed from the consensus committee due to poor performance; 
+(III) \textbf{Evaluation Metrics:} the criteria used to compute performance scores; 
+(IV) \textbf{Communication Overhead:} whether the mechanism requires additional message exchanges; 
+(V) \textbf{Decoupled Architecture:} if the leader selection is ``standalone'' (i.e., detached from the core consensus logic and easily portable to other State Machine Replication (SMR) systems); 
+(VI) \textbf{Continuous Evaluation:} whether the algorithm continuously analyzes the system or relies on periodic evaluation windows; and 
+(VII) \textbf{Rotation Policy:} whether the protocol implements leader/proposer rotation.
+
+Being PBFT-based, several of the surveyed algorithms rely on a static primary replica and trigger a view change only when necessary. In these systems, node differentiation is primarily used to establish a fallback ranking of nodes to assume leadership after a view change occurs (e.g., \cite{eischer2018latency, shan2025grouped, zhang2024prestigebft, zhu2025rgpbft}). 
+
+Furthermore, most related works actively evict slow nodes from the consensus committee to maintain high throughput (e.g., \cite{du2020performance, huang2023improved, qiao2024enhancing, wen2025mapbft, zhao2022pbft}). While Byzantine detection and removal is a standard feature in modern SMR deployments, relying on node eviction for performance reasons introduces a fundamental trade-off between fault tolerance and throughput. Maximizing Byzantine tolerance requires preserving slower, honest nodes, whereas maximizing performance favors evicting them. Because modern systems already feature robust Byzantine eviction, introducing additional performance-based removal mechanisms can be redundant and risks accidentally expelling non-faulty, lagging nodes, ultimately limiting protocol generalizability.
+
+\vspace{-3mm}
+\begin{table}[h!]
+\centering
+ \scriptsize 
+\caption{Comparison of leader selection strategies}
+\label{related}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\begin{tabular}
+{|M{0.9cm}|M{0.6cm}|M{0.8cm}|M{5cm}|M{1cm}|M{0.8cm}|M{0.8cm}|M{0.8cm}|}
+\hline 
+\rotatebox{90}{\textbf{Algorithm} } & 
+\rotatebox{90}{\shortstack{\textbf{Score}\\\textbf{Type}} } & 
+\rotatebox{90}{\shortstack{\textbf{Committee}\\\textbf{Eviction}} } &
+\rotatebox{90}{\shortstack{\textbf{Evaluation}\\\textbf{Metrics}} } & 
+\rotatebox{90}{\shortstack{\textbf{Communic.}\\\textbf{Overhead}} } &
+\rotatebox{90}{\shortstack{\textbf{Decoupled}\\\textbf{Architecture}}  } & 
+\rotatebox{90}{\shortstack{\textbf{Continuous}\\\textbf{Evaluation}} } & 
+\rotatebox{90}{\shortstack{\textbf{Rotation}\\\textbf{Policy}} }\\ 
+\hline
+
+Ours &
+C&
+N &
+Consensus duration&
+Y &
+Y &
+Y &
+P\\
+\hline
+
+\cite{eischer2018latency} &
+C&
+N&
+Each client realize one consensus per node to measure relative leader performance&
+Y\footnote{Multiple consensus.}&
+Y &
+N &
+N \\
+\hline
+
+\cite{yu2024adaptive} &
+C&
+N &
+Leader throughput during evaluation phases &
+N &
+Y &
+N &
+E\\
+\hline
+
+\cite{zhang2024prestigebft} &
+C&
+N&
+Number of blocks committed as leader&
+Y&
+Y\footnote{For systems without leader rotation.} &
+Y &
+N \\
+\hline
+
+\cite{zhu2025rgpbft} &
+C&
+N &
+Participation level and consensus failure &
+Y &
+N &
+Y &
+N\\
+\hline
+
+\cite{du2020performance} &
+C&
+Y &
+Block success/failure and node participation &
+Y &
+Y &
+Y &
+N\\
+\hline
+
+\cite{wen2025mapbft} &
+C&
+Y &
+Latency and Byzantine behaviors &
+Y &
+N &
+Y &
+N\footnote{The \cite{wen2025mapbft} primary is the node with the most voting power. If  voting power changes, a new node can become the primary even without suspected failure. However, the algorithm does not perform intentional leader rotation}\\
+
+\hline
+\cite{shan2025grouped} &
+D&
+N &
+Response time and behavioral metrics &
+Y &
+N &
+Y &
+N\\
+\hline
+
+\cite{huang2023improved} &
+D&
+Y &
+Compound metrics including node performance, participation, and other factors&
+Y &
+N &
+Y &
+N\\
+\hline
+
+\cite{qiao2024enhancing} &
+D&
+Y &
+Node latency, availability, activity, and consensus contribution &
+Y &
+N &
+Y &
+N\\
+\hline
+
+\cite{zhao2022pbft} &
+D&
+Y &
+Consensus success or failure &
+N &
+N &
+Y &
+N\\
+\hline
+\end{tabular}
+\begin{tablenotes}
+\small
+\item \textbf{Legend:} \\
+{\bf C} : Continuous or {\bf D} : Discrete score values; 
+{\bf P} : Proportional or {\bf E} : Equal rotation.
+\end{tablenotes}
+\end{table} 
+
+\vspace{-3mm}
+This reliance on PBFT also creates an evaluation gap in the literature. 
+%Existing comparisons frequently focus on legacy PBFT baselines under heavy Byzantine attacks. Consequently, 
+It remains unclear how modern production-grade SMR systems with native Byzantine removal (such as Tendermint or HotStuff) would benefit from these proposed optimizations.
+%
+Additionally, while these primary-replica systems inherit a susceptibility to censorship, the surveyed literature largely leaves this vulnerability unaddressed. A notable exception is the work by Yu et al. \cite{yu2024adaptive}, which mitigates censorship by enforcing a uniform rotation among all nodes that exceed a baseline performance threshold. 
+
+In contrast, our approach balances performance and censorship resistance by biasing the leader rotation toward high-performing nodes. This design enhances throughput while preserving continuous rotation across the committee. Tailored specifically for modern SMR architectures, our solution maintains original Byzantine fault-tolerance bounds and acts as a non-invasive plugin that optimizes proposer selection without modifying the underlying consensus algorithm.
+
+Finally, a recurring limitation across prior work is the superficial treatment of consensus latency. The assumption that computationally weak or topologically distant nodes degrade performance is often accepted without empirical investigation. Our experiments challenge this oversimplification, demonstrating that node-to-node network latency is a critical factor that dictates not only individual step durations, but also the dynamic composition of the quorums that actively drive consensus.

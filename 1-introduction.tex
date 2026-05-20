@@ -1,0 +1,19 @@
+%
+\section{Introduction}
+
+%State Machine Replication has seen widespread adoption in recent years, particularly due to its use in blockchain systems. 
+Early blockchain platforms such as Bitcoin\cite{nakamoto2008bitcoin} and Ethereum\cite{tikhomirov2017ethereum} demonstrated fully functional permissionless distributed consensus systems, prioritizing security and correctness at the expense of performance. As modern systems experience increasing workloads, this creates a need for higher throughput and lower per-transaction latency. In response, modern research has largely shifted towards improving performance, sometimes even assuming lower security thresholds for the sake of performance\cite{eischer2018latency}. 
+
+Consensus algorithms are a central piece in blockchains.
+Several modern such algorithms employ rotating leaders or proposers, aiming to mitigate the performance impact of byzantine processes; avoid censorship; and provide fair reward distribution.    
+While a leader coordinates the different consensus phases of a consensus instance (e.g. as in \cite{yin2019hotstuff}), a proposer is only in charge of proposing a value for an instance and the further phases are distributed (e.g. as in \cite{buchman2016tendermint}).   In this paper we explore proposer selection as a possible avenue for performance improvement. Although not addressed in this paper, it is expected that leader-based algorithms would be even more affected by the topology than proposer-based ones. 
+
+{\it A first contribution} of this paper is the set of experiments to understand the impact of the proposer's position within the topology on the performance of geo-distributed consensus.
+Our experiments in Section \ref{sec:impact} show that the position of a proposer is a significant factor throughout the entirety of consensus. In some topologies we observe overheads of up to 40\% in overall consensus latency, attributed only to the position of a proposer. We also show that the position of a proposer impacts quorum formation, and therefore the duration of individual consensus steps.    
+
+{\it The second contribution} of this paper is, based on the above observations,  the proposition of  a generic proposer selection optimization mechanism. In Section \ref{sec:algorithm} we define this mechanism, argue for its applicability in Byzantine environments, and evaluate it through practical experiments. Our experiments in Section \ref{sec:experiments} compare a Tendermint implementation with and without our mechanism, showing throughput improvements of up to 15\% in some topologies with no impact to Byzantine tolerance.
+
+The paper follows in Section \ref{sec:background} with the system model, a discussion of Tendermint and related work.  It then continues with Sections
+\ref{sec:impact}, \ref{sec:algorithm} and \ref{sec:experiments} as discussed above, followed then by Conclusions.
+
+

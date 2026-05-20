@@ -1,0 +1,248 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.21 of 2022/01/12
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage[T1]{fontenc}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encondings may result in incorrect characters.
+%
+\usepackage{graphicx}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following two lines
+% to display URLs in blue roman font according to Springer's eBook style:
+%\usepackage{color}
+%\renewcommand\UrlFont{\color{blue}\rmfamily}
+%\urlstyle{rm}
+%
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tablefootnote}
+\usepackage{svg}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{textcomp}
+\usepackage{pifont}
+\usepackage{threeparttable}
+\usepackage{xcolor}
+\usepackage{array}
+
+
+\begin{document}
+%
+\title{
+Performance-Aware Byzantine-Resilient Leader Prioritization for Geo-Distributed Blockchains
+}
+%
+%\titlerunning{Abbreviated paper title}
+% If the paper title is too long for the running head, you can set
+% an abbreviated paper title here
+%
+\author{Lucca Cézar\inst{1}\orcidID{0000-1111-2222-3333} \and
+Fernando Dotti\inst{1}\orcidID{1111-2222-3333-4444} \and
+Fernando Pedone\inst{2}\orcidID{2222--3333-4444-5555}}
+%
+\authorrunning{Lucca Cézar et al.}
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{PUCRS - School of Technology - PPGCC, Porto Alegre, Brazil
+\email{lucca.dornelles99@edu.pucrs.br, fernando.dotti@pucrs.br}
+\and
+Università della Svitzzera italiana, Lugano, Switzerland  \\ 
+\email{fernando.pedone@usi.ch}}
+%
+\maketitle              % typeset the header of the contribution
+%
+\begin{abstract}
+
+Blockchain consensus protocols have increasingly focused on performance improvements, including approaches such as better leader selection. However, the specifics of how a leader impacts consensus latency remains poorly characterized.
+%
+We conduct an experimental study with geo-distributed %with emulated AWS 
+topologies and show that the choice of leader can significantly impact consensus, affecting step durations, quorum formation, and increasing consensus time by up to 40\%. Based on these findings we propose a simple, generic mechanism that uses distributed observations to steer leader selection toward higher-performing leaders. 
+%
+Our approach is robust to Byzantine behavior, incurs no worst-case performance overhead, and %improves throughput when [short-term ??????] leader performance is consistent. It 
+achieves throughput gains of up to 80\% compared to node-removal baselines, without reducing Byzantine tolerance. While evaluated on a specific BFT protocol, the method generalizes to rotating-leader SMR systems.
+
+
+\keywords{Byzantine consensus \and Blockchains \and Leader selection.}
+\end{abstract}
+
+\input{1-introduction}
+\input{2-background}
+\input{3-impactStudy}
+\input{4-algorithm}
+\input{5-experiments}
+
+\section{Conclusion}
+
+--- to be written 
+
+Note that this is an experiment with only 13 nodes, while Cosmos, a large scale implementation of Tendermint, is expected to have up to 180 nodes in the committee\footnote{\url{https://docs.cosmos.network/hub/latest/validators/overview}}. It is possible that a single fixed proposer could suffer additional overhead at that scale. Nevertheless, reducing the proposer pool to a smaller subset, excluding only the most disproportionally slow nodes, could still be a realistic approach. 
+
+
+----
+In this paper we study how the position of a proposer within a topology affects distributed consensus, and propose a generic mechanism to improve performance through leader selection. As our research focuses on Tendermint, further research on other consensus algorithms is warranted to validate these findings and explore potential edge cases. In particular, algorithms such as HotStuff, with its more involved leader, are expected to have more pronounced leader impact on consensus. 
+
+Finally, our mechanism is shown to improve performance with no measurable overhead. Nevertheless, several areas could be explored further, such as the impact of individual parameters and possible improvements. In particular, a more nuanced vote could lead to  additional performance improvements. 
+
+\begin{credits}
+%\subsubsection{\ackname} A bold run-in heading in small font size at the end of the paper isused for general acknowledgments, for example: This study was funded by X (grant number Y).
+
+\subsubsection{\discintname}
+The authors have no competing interests to declare that are
+relevant to the content of this article. 
+
+\end{credits}
+%
+% ---- Bibliography ----
+%
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+
+% \appendix
+% \subsection{Proof of Limits of $S'_n$}
+% \label{proof}
+% The value $S'_n$, respective to the updated score of the node $n$, is modified follows: 
+
+% $S'_n = \beta*S_n+\alpha*decided_n$
+
+% where $S_n$ is the previous score, $0\le\beta<1$, $\alpha\ge0$, and $decided_n \in \{-1,0,1\}$.
+
+% The value reaches its maximum when, for every decision, $decided_n=1$, and minimum when $decided_n=-1$. 
+
+% For clarity, we omit the multiplication symbol and denote $S_n$ by $S$, with $S_0$ representing the initial state (always 0), and $S_1$ being the next iteration until an infinite $S_N$. This leads to the following recursion representing the limits of the value $S'_n$:
+
+% $S_N = \beta S_{N-1}+\alpha$
+
+% Where $\alpha$ is implicitly multiplied by a constant $decided_n \in \{1,-1\}$. We then expand the function to determine its limit as follows:
+% \begin{enumerate}
+%     \item Expansion of the recursion\\
+% $S_N = \beta S_{N-1}+\alpha$ \\
+% $S_N = \beta(\beta S_{N-2}+\alpha)+\alpha$\\
+% $S_N = \beta^2S_{N-2}+\beta\alpha+\alpha$\\
+% $S_N = \beta^2(\beta S_{N-3} +\alpha)+\beta\alpha+\alpha$\\
+% $S_N = \beta^3S_{N-3}+\beta^2\alpha+\beta\alpha+\alpha$\\
+% Iterating this process yields\\$S_N=\beta S_0+\alpha(1+\beta+\beta^2+...+\beta^{N-1})$\\ 
+% Since $S_0$, the initial state, is zero, we can reduce $S_N$ into $\alpha(1+\beta+\beta^2+...+\beta^{N-1})$ 
+% \item Closed form solution \\
+% We define $s$ as the geometric series $(1+\beta+...+\beta^{N-1})$. We then derive its closed-form expression as follows:\\
+% $s=1+\beta¹+...+\beta^{N-1}$\\
+% $\beta s=\beta¹+\beta^2+...+\beta^{N}$\\
+% $s-\beta s=(1+\beta+...+\beta^{N-1})-(\beta+...+\beta^{N-1}+\beta^N)$\\
+% $s-\beta s=1-\beta^N$\\
+% $s(1-\beta)=1-\beta^N$\\
+% $s=\frac{1-\beta^N}{1-\beta}$
+% \item Taking the limit\\
+% We can now substitute the geometric series for the closed-form expression, yielding\\
+% $S_N=\alpha(\frac{1-\beta^N}{1-\beta})$\\
+% For $0 \le\beta <1$, we have $\lim\limits_{N\to\infty} \beta^N=0$, therefore, \[\lim_{N\to\infty}S_N=\frac{\alpha}{1-\beta}\]
+
+% Multiplying $\alpha$ by a $decided_n\in\{1,-1\}$ yields the corresponding upper and lower limits. 
+% \end{enumerate}
+
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\end{document}
+
+\begin{thebibliography}{8}
+\bibitem{ref_article1}
+Author, F.: Article title. Journal \textbf{2}(5), 99--110 (2016)
+
+\bibitem{ref_lncs1}
+Author, F., Author, S.: Title of a proceedings paper. In: Editor,
+F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
+Springer, Heidelberg (2016). \doi{10.10007/1234567890}
+
+\bibitem{ref_book1}
+Author, F., Author, S., Author, T.: Book title. 2nd edn. Publisher,
+Location (1999)
+
+\bibitem{ref_proc1}
+Author, A.-B.: Contribution title. In: 9th International Proceedings
+on Proceedings, pp. 1--2. Publisher, Location (2010)
+
+\bibitem{ref_url1}
+LNCS Homepage, \url{http://www.springer.com/lncs}, last accessed 2023/10/25
+\end{thebibliography}
+\end{document}
+
+
+
+\section{First Section}
+\subsection{A Subsection Sample}
+Please note that the first paragraph of a section or subsection is
+not indented. The first paragraph that follows a table, figure,
+equation etc. does not need an indent, either.
+
+Subsequent paragraphs, however, are indented.
+
+\subsubsection{Sample Heading (Third Level)} Only two levels of
+headings should be numbered. Lower level headings remain unnumbered;
+they are formatted as run-in headings.
+
+\paragraph{Sample Heading (Fourth Level)}
+The contribution should contain no more than four levels of
+headings. Table~\ref{tab1} gives a summary of all heading levels.
+
+\begin{table}
+\caption{Table captions should be placed above the
+tables.}\label{tab1}
+\begin{tabular}{|l|l|l|}
+\hline
+Heading level &  Example & Font size and style\\
+\hline
+Title (centered) &  {\Large\bfseries Lecture Notes} & 14 point, bold\\
+1st-level heading &  {\large\bfseries 1 Introduction} & 12 point, bold\\
+2nd-level heading & {\bfseries 2.1 Printing Area} & 10 point, bold\\
+3rd-level heading & {\bfseries Run-in Heading in Bold.} Text follows & 10 point, bold\\
+4th-level heading & {\itshape Lowest Level Heading.} Text follows & 10 point, italic\\
+\hline
+\end{tabular}
+\end{table}
+
+
+\noindent Displayed equations are centered and set on a separate
+line.
+\begin{equation}
+x + y = z
+\end{equation}
+Please try to avoid rasterized images for line-art diagrams and
+schemas. Whenever possible, use vector graphics instead (see
+Fig.~\ref{fig1}).
+
+\begin{figure}
+\includegraphics[width=\textwidth]{fig1.eps}
+\caption{A figure caption is always placed below the illustration.
+Please note that short captions are centered, while long ones are
+justified by the macro package automatically.} \label{fig1}
+\end{figure}
+
+\begin{theorem}
+This is a sample theorem. The run-in heading is set in bold, while
+the following text appears in italics. Definitions, lemmas,
+propositions, and corollaries are styled the same way.
+\end{theorem}
+%
+% the environments 'definition', 'lemma', 'proposition', 'corollary',
+% 'remark', and 'example' are defined in the LLNCS documentclass as well.
+%
+
+For citations of references, we prefer the use of square brackets
+and consecutive numbers. Citations using labels or the author/year
+convention are also acceptable. The following bibliography provides
+a sample reference list with entries for journal
+articles~\cite{ref_article1}, an LNCS chapter~\cite{ref_lncs1}, a
+book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
+and a homepage~\cite{ref_url1}. Multiple citations are grouped
+\cite{ref_article1,ref_lncs1,ref_book1},
+\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
