@@ -1,0 +1,96 @@
+This is BibTeX, Version 0.99d (TeX Live 2025)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: 0-main.aux
+The style file: splncs04.bst
+Database file #1: references.bib
+Repeated entry---line 218 of file references.bib
+ : @inproceedings{yu2024adaptive
+ :                              ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 227 of file references.bib
+ : @article{qiao2024enhancing
+ :                           ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 237 of file references.bib
+ : @inproceedings{du2020performance
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 246 of file references.bib
+ : @inproceedings{shan2025grouped
+ :                               ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 256 of file references.bib
+ : @article{zhu2025rgpbft
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 267 of file references.bib
+ : @inproceedings{huang2023improved
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 275 of file references.bib
+ : @article{wen2025mapbft
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 286 of file references.bib
+ : @inproceedings{zhao2022pbft
+ :                            ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 295 of file references.bib
+ : @inproceedings{di2025impact
+ :                            ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 303 of file references.bib
+ : @inproceedings{castro1999practical
+ :                                   ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 313 of file references.bib
+ : @phdthesis{buchman2016tendermint
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 320 of file references.bib
+ : @inproceedings{yin2019hotstuff
+ :                               ,
+I'm skipping whatever remains of this entry
+Warning--can't use both volume and number fields in castro1999practical
+You've used 18 entries,
+            2850 wiz_defined-function locations,
+            704 strings with 8270 characters,
+and the built_in function-call counts, 12108 in all, are:
+= -- 1092
+> -- 336
+< -- 22
++ -- 140
+- -- 120
+* -- 728
+:= -- 1492
+add.period$ -- 39
+call.type$ -- 18
+change.case$ -- 137
+chr.to.int$ -- 0
+cite$ -- 19
+duplicate$ -- 1026
+empty$ -- 1085
+format.name$ -- 133
+if$ -- 2738
+int.to.chr$ -- 0
+int.to.str$ -- 18
+missing$ -- 190
+newline$ -- 60
+num.names$ -- 36
+pop$ -- 372
+preamble$ -- 1
+purify$ -- 94
+quote$ -- 0
+skip$ -- 389
+stack$ -- 0
+substring$ -- 830
+swap$ -- 580
+text.length$ -- 22
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 72
+warning$ -- 1
+while$ -- 104
+width$ -- 20
+write$ -- 194
+(There were 12 error messages)
