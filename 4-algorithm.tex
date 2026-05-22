@@ -126,10 +126,10 @@ mechanism operates continuously through three lightweight steps:
 \paragraph{Vote step.}
 After deciding on a consensus instance $h$, each node broadcasts its local classification $c_h$ for the proposer of height $h$. 
 This information is sent with the first message at consensus height $h+1$ (e.g., Tendermint's \texttt{prevote}), thereby avoiding additional communication rounds.
-Voting lasts until the decision for height $h+1$.  
-The reason for using the decision as a limit is twofold. 
-First, the synchronization eases the integration of the mechanism and the reuse of messages. %, ensuring scores are updated in a timely manner. 
-And second, it allows for gathering additional votes beyond the quorum needed to advance the underlying consensus phase.
+%Voting lasts until the decision for height $h+1$.  
+%The reason for using the decision as a limit is twofold. 
+%First, the synchronization eases the integration of the mechanism and the reuse of messages. %, ensuring scores are updated in a timely manner. 
+%And second, it allows for gathering additional votes beyond the quorum needed to advance the underlying consensus phase.
 
 \paragraph{Choose step.}
 At the beginning of height $h+2$, nodes evaluate the classifications received for height $h$. 

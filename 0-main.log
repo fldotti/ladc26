@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.4.3)  22 MAY 2026 11:04
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.4.3)  22 MAY 2026 11:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -800,24 +800,24 @@ File: svgi/awsblock.svg.png Graphic file (type png)
 <use svgi/awsblock.svg.png>
 Package pdftex.def Info: svgi/awsblock.svg.png  used on input line 21.
 (pdftex.def)             Requested size: 208.27623pt x 156.48021pt.
-
-
-[13]
-<svgi/dev80th.svg.png, id=218, 577.15625pt x 433.62pt>
+<svgi/dev80th.svg.png, id=210, 577.15625pt x 433.62pt>
 File: svgi/dev80th.svg.png Graphic file (type png)
 <use svgi/dev80th.svg.png>
 Package pdftex.def Info: svgi/dev80th.svg.png  used on input line 34.
 (pdftex.def)             Requested size: 208.27623pt x 156.48021pt.
-<svgi/rand80th.svg.png, id=222, 577.15625pt x 433.62pt>
+
+
+[13]
+<svgi/rand80th.svg.png, id=225, 577.15625pt x 433.62pt>
 File: svgi/rand80th.svg.png Graphic file (type png)
 <use svgi/rand80th.svg.png>
 Package pdftex.def Info: svgi/rand80th.svg.png  used on input line 47.
 (pdftex.def)             Requested size: 208.27623pt x 156.48021pt.
-)
 
-[14 <./svgi/awsblock.svg.png>]
 
-[15 <./svgi/dev80th.svg.png> <./svgi/rand80th.svg.png>] (./0-main.bbl
+[14 <./svgi/awsblock.svg.png> <./svgi/dev80th.svg.png>]) (./0-main.bbl
+
+[15 <./svgi/rand80th.svg.png>]
 
 [16])
 
@@ -826,6 +826,10 @@ Package pdftex.def Info: svgi/rand80th.svg.png  used on input line 47.
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package rerunfilecheck Info: File `0-main.out' has not changed.
 (rerunfilecheck)             Checksum: A728E2AE1E336626381AC4D0D6D876B1;412.
  ) 
@@ -869,7 +873,7 @@ ist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dis
 t/fonts/type1/public/cm-super/sfti1000.pfb></usr/local/texlive/2025/texmf-dist/
 fonts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2025/texmf-dist/fo
 nts/type1/public/cm-super/sftt1000.pfb>
-Output written on 0-main.pdf (17 pages, 1102858 bytes).
+Output written on 0-main.pdf (17 pages, 1102414 bytes).
 PDF statistics:
  364 PDF objects out of 1000 (max. 8388607)
  284 compressed objects within 3 object streams
