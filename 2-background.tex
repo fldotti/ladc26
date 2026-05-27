@@ -11,9 +11,8 @@ For simplicity, here we consider that all nodes in $\Pi$ act as \emph{validators
 The set of nodes is dynamic and known by all nodes.  
 
 Nodes communicate by message passing. 
-The system is partially asynchronous: it is initially asynchronous, when messages may experience arbitrarily large (but finite) delays, and there is no bound on relative
-process speeds.
-At an unknown moment (i.e., the Global Stabilization Time), becoming synchronous, when message delays and processing speed become bounded.
+The system is partially synchronous: it is initially asynchronous when there is no bound on message delays or relative process speeds.
+At an unknown moment (i.e., the Global Stabilization Time), the system becomes synchronous, when message delays and processing speed become bounded.
 
 There are up to $f < N/3$ \emph{faulty} or Byzantine nodes; the remaining nodes are \emph{honest}.
 Faulty nodes can deviate from their specifications, whereas honest nodes adhere to them.
@@ -24,10 +23,10 @@ Cryptographic techniques are used, with adversaries not having (with high probab
 \label{tenderback}
 
 We consider permissioned consensus protocols, such as PBFT~\cite{castro1999practical} and Tendermint~\cite{buchman2016tendermint}.
-Tendermint consensus operates through three sequential phases, propose, prevote, and precommit, which functionally correspond to the pre-prepare, prepare, and commit stages of the Practical Byzantine Fault Tolerance (PBFT) algorithm. 
+Tendermint consensus operates through three sequential phases, \emph{propose}, \emph{prevote}, and \emph{precommit}, which functionally correspond to the \emph{pre-prepare}, \emph{prepare}, and \emph{commit} stages of the Practical Byzantine Fault Tolerance (PBFT) algorithm. 
 A primary distinction of Tendermint is the implementation of a rotating proposer mechanism: by using a round-robin approach in which each node proposes only once, the network mitigates censorship \cite{wahrstatter2024blockchain}. % and ensures that an honest proposer eventually assumes leadership. 
 
-Furthermore, unlike PBFT, which is permissioned, Tendermint is designed for environments where unknown participants can join. To protect against Sybil attacks\cite{douceur2002sybil}, where a malicious actor might otherwise flood the network with nodes to gain control, the protocol integrates a Proof of Stake (PoS) mechanism. %This economic barrier shifts this is the last candidate.  next esc will revert to uncompleted text. he security assumption from a count of nodes to a distribution of wealth: the system remains secure as long as less than one-third of the total staked tokens are held by Byzantine actors. 
+Furthermore, unlike PBFT, Tendermint is designed for environments where unknown participants can join. To protect against Sybil attacks\cite{douceur2002sybil}, where a malicious actor might otherwise flood the network with nodes to gain control, the protocol integrates a Proof of Stake (PoS) mechanism. %This economic barrier shifts this is the last candidate.  next esc will revert to uncompleted text. he security assumption from a count of nodes to a distribution of wealth: the system remains secure as long as less than one-third of the total staked tokens are held by Byzantine actors. 
 Participants receive rewards for consensus participation, while detected malicious behavior results in the destruction or reduction of their stake via slashing. This design effectively increases the cost of subversion, making it expensive for an adversary to acquire a quorum.
 
 \section{Related Work}

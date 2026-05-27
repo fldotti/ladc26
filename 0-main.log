@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.4.3)  22 MAY 2026 11:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.4.3)  27 MAY 2026 07:39
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -653,24 +653,24 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 (./0-main.aux)
 \openout1 = `0-main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 38.
-LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
 
 (/usr/local/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -694,7 +694,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring OFF on input line 38.
+Package hyperref Info: Link coloring OFF on input line 40.
 
 (./0-main.out) (./0-main.out)
 \@outlinefile=\write4
@@ -703,13 +703,13 @@ Package hyperref Info: Link coloring OFF on input line 38.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: threeparttable package is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 65.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 67.
 
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 65.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 67.
 
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -723,12 +723,6 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 al/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{/usr/local
 /texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}])
 (./2-background.tex
-Overfull \hbox (4.23877pt too wide) in paragraph at lines 13--17
-[]\T1/cmr/m/n/10 Nodes com-mu-ni-cate by mes-sage pass-ing. The sys-tem is par-
-tially asyn-chronous:
- []
-
-
 
 [2]
 
@@ -789,18 +783,23 @@ eader.svg.png>]
 [9
 
 ]
+Overfull \hbox (4.66373pt too wide) in paragraph at lines 55--56
+[]\T1/cmr/m/n/10 FP: THERE'S SOME-THING WRONG HERE, WITH THE HEIGHTS. HOW
+ []
+
+
 
 [10]
 
 [11]
 
 [12]) (./5-experiments.tex
-<svgi/awsblock.svg.png, id=207, 577.15625pt x 433.62pt>
+<svgi/awsblock.svg.png, id=206, 577.15625pt x 433.62pt>
 File: svgi/awsblock.svg.png Graphic file (type png)
 <use svgi/awsblock.svg.png>
 Package pdftex.def Info: svgi/awsblock.svg.png  used on input line 21.
 (pdftex.def)             Requested size: 208.27623pt x 156.48021pt.
-<svgi/dev80th.svg.png, id=210, 577.15625pt x 433.62pt>
+<svgi/dev80th.svg.png, id=209, 577.15625pt x 433.62pt>
 File: svgi/dev80th.svg.png Graphic file (type png)
 <use svgi/dev80th.svg.png>
 Package pdftex.def Info: svgi/dev80th.svg.png  used on input line 34.
@@ -808,16 +807,16 @@ Package pdftex.def Info: svgi/dev80th.svg.png  used on input line 34.
 
 
 [13]
-<svgi/rand80th.svg.png, id=225, 577.15625pt x 433.62pt>
+
+[14 <./svgi/awsblock.svg.png> <./svgi/dev80th.svg.png>]
+<svgi/rand80th.svg.png, id=229, 577.15625pt x 433.62pt>
 File: svgi/rand80th.svg.png Graphic file (type png)
 <use svgi/rand80th.svg.png>
 Package pdftex.def Info: svgi/rand80th.svg.png  used on input line 47.
 (pdftex.def)             Requested size: 208.27623pt x 156.48021pt.
+)
 
-
-[14 <./svgi/awsblock.svg.png> <./svgi/dev80th.svg.png>]) (./0-main.bbl
-
-[15 <./svgi/rand80th.svg.png>]
+[15 <./svgi/rand80th.svg.png>] (./0-main.bbl
 
 [16])
 
@@ -826,19 +825,15 @@ Package pdftex.def Info: svgi/rand80th.svg.png  used on input line 47.
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `0-main.out' has not changed.
 (rerunfilecheck)             Checksum: A728E2AE1E336626381AC4D0D6D876B1;412.
  ) 
 Here is how much of TeX's memory you used:
- 15619 strings out of 473190
- 261011 string characters out of 5715801
- 715614 words of memory out of 5000000
- 38488 multiletter control sequences out of 15000+600000
- 575221 words of font info for 74 fonts, out of 8000000 for 9000
+ 15622 strings out of 473190
+ 261033 string characters out of 5715801
+ 715605 words of memory out of 5000000
+ 38491 multiletter control sequences out of 15000+600000
+ 576595 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  94i,19n,93p,835b,611s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
@@ -853,30 +848,31 @@ pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
 pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
 , replaced by a fixed one
 
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
-/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></u
-sr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr
-/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/lo
-cal/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local
-/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/
-texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/te
-xlive/2025/texmf-dist/fonts/type1/public/cm-super/sfbx0700.pfb></usr/local/texl
-ive/2025/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/local/texliv
-e/2025/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/local/texlive/
-2025/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/20
-25/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2025
-/texmf-dist/fonts/type1/public/cm-super/sfrm0500.pfb></usr/local/texlive/2025/t
-exmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive/2025/tex
-mf-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/local/texlive/2025/texmf
--dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2025/texmf-d
-ist/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dis
-t/fonts/type1/public/cm-super/sfti1000.pfb></usr/local/texlive/2025/texmf-dist/
-fonts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2025/texmf-dist/fo
-nts/type1/public/cm-super/sftt1000.pfb>
-Output written on 0-main.pdf (17 pages, 1102414 bytes).
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><
+/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></
+usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></us
+r/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
+local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/loc
+al/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/
+texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/t
+exlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/tex
+live/2025/texmf-dist/fonts/type1/public/cm-super/sfbx0700.pfb></usr/local/texli
+ve/2025/texmf-dist/fonts/type1/public/cm-super/sfbx0900.pfb></usr/local/texlive
+/2025/texmf-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/local/texlive/2
+025/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/202
+5/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2025/
+texmf-dist/fonts/type1/public/cm-super/sfrm0500.pfb></usr/local/texlive/2025/te
+xmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive/2025/texm
+f-dist/fonts/type1/public/cm-super/sfrm0700.pfb></usr/local/texlive/2025/texmf-
+dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2025/texmf-di
+st/fonts/type1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2025/texmf-dist
+/fonts/type1/public/cm-super/sfti1000.pfb></usr/local/texlive/2025/texmf-dist/f
+onts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2025/texmf-dist/fon
+ts/type1/public/cm-super/sftt1000.pfb>
+Output written on 0-main.pdf (17 pages, 1112104 bytes).
 PDF statistics:
- 364 PDF objects out of 1000 (max. 8388607)
- 284 compressed objects within 3 object streams
- 85 named destinations out of 1000 (max. 500000)
+ 365 PDF objects out of 1000 (max. 8388607)
+ 283 compressed objects within 3 object streams
+ 83 named destinations out of 1000 (max. 500000)
  56 words of extra memory for PDF output out of 10000 (max. 10000000)
 

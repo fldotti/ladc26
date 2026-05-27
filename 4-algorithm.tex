@@ -3,95 +3,28 @@
 \section{Performance-Aware Proposer Prioritization}
 \label{sec:algorithm}
 
-We now propose a generic mechanism that continuously adapts the proposer frequency based on the observed performance of consensus instances.
-Our approach targets consensus protocols that employ rotating proposers and maintain a deterministic proposer-selection function, which we denote by \textit{nextProposer}. 
-In proof-of-stake systems, for example, \textit{nextProposer} is typically derived from the known stake distribution among validators.
-
-The mechanism is designed to satisfy the following properties:
-
-\begin{itemize}
-    \item[P.1] The safety and liveness properties of the underlying consensus algorithm are preserved.
-    
-    \item[P.2] Proposers associated with faster (slower) consensus decisions become proposers proportionally more (less) often.
-    
-    \item[P.3] Changes in the relative performance of proposers over time lead to corresponding adaptations in proposer frequency.
-    
-    \item[P.4] Every honest node eventually becomes a proposer.
-    
-    \item[P.5] Byzantine nodes cannot arbitrarily impose proposer sequences.
-    
-    \item[P.6] Byzantine nodes cannot prevent the differentiation between faster and slower proposers.
-\end{itemize}
-
-To achieve these properties, the mechanism operates continuously in three stages. 
-First, each node locally observes consensus latency and derives a performance classification for proposers (Section~\ref{subsec:samplig}). 
-Second, nodes exchange and reconcile their local observations to produce a globally consistent classification history (Section~\ref{subsec:globalclassification}).
-Finally, these classifications are incorporated into the proposer-selection logic, biasing proposer frequency toward nodes that consistently lead to faster consensus decisions while preserving continuous rotation and Byzantine resilience (Section~\ref{subsec:scores}).
-We conclude the section by arguing about the correctness of our proposed approach (Section~\ref{subsec:correctness}).
-
-
-
-
-
-
-%As shown in the previous section, the position of a proposer does impact consensus performance. From this observation we devise an approach to dynamically adjust the frequency that each participant becomes proposer, favoring faster ones, and thus enhancing overall consensus performance. The proposed approach poses the following assumptions to the underlying consensus algorithm:  
-%\begin{description}
-%    \item[A.1] it uses rotating proposer and provides means to record the future sequence of proposers (or parameters to calculate it); 
-%    \item[A.2] it has a deterministic function used at each node to calculate the next proposer.   We call this function \textit{nextProposer}.  For instance, with PoS, the next proposer is a function of the known stakes from each participant. 
-%\end{description}
-%
-%The proposed mechanisms should ensure the following basic properties:
-%\begin{description} 
-%
-%    \item[P.1] the underlying consensus algorithm properties are preserved;     
-%    %For instance, it does not modify the composition of the consensus committee, unlike some of the related works; 
-%
-%    \item[P.2] disregarding stake, or with a uniform stake distribution, proposer nodes with faster (slower) decisions become proposers proportionally more (less) often;
-%
-%    \item[P.3] changes in a node's relative performance over time lead to respective adaptation of its frequency as proposer;  
-%
-%    \item[P.4] every node eventually becomes proposer.
-%   
-%    \item[P.5] dishonest nodes do not impose an arbitrary sequence of proposers;
-%    
-%    \item[P.6] dishonest nodes do not hinder the differentiation of faster/slower nodes. 
-%
-%\end{description}
-%
-%To achieve the desired properties, three concurrent, continuous mechanisms are proposed:
-%\begin{description} 
-%    \item[M.1] every node samples the latency and locally classifies each other node;
-%    
-%    \item[M.2] every node collaborates to generate consistent global classifications;
-%    
-%    \item[M.3] every node uses the global classification to calculate and adopt a new sequence of proposers.   
-%\end{description}
-
-
+We propose a generic mechanism that continuously adapts the proposer frequency based on the observed performance of consensus instances. 
+The mechanism targets consensus protocols that employ rotating proposers and maintain a deterministic proposer-selection function, denoted by \textit{nextProposer}
+(e.g., derived from stake in proof-of-stake systems). 
+The approach operates in three stages: nodes first locally classify proposers according to observed consensus latency (Section~\ref{subsec:samplig}); these observations are then reconciled into a globally consistent classification history (Section~\ref{subsec:globalclassification}); finally, the resulting classifications are incorporated into proposer selection, biasing proposer frequency toward nodes that consistently lead to faster consensus decisions while preserving continuous rotation and Byzantine resilience (Section~\ref{subsec:scores}).
+We conclude the section by discussing the properties and correctness of the
+proposed mechanism (Section~\ref{subsec:correctness}).
 
 \subsection{Sampling and classifying proposers}
 \label{subsec:samplig}
 
-Each node continuously monitors the latency of consensus instances in order
-to estimate the relative performance of proposers. For each consensus height,
-a node locally measures the elapsed time between the beginning of the consensus
-instance (e.g., Tendermint's \texttt{propose}) and the final decision.
+Each node continuously monitors the latency of consensus instances in order to estimate the relative performance of proposers. 
+For each consensus height, each node locally measures the elapsed time from the start of the consensus instance (e.g., Tendermint's \texttt{propose}) to the final decision.
 
-Since each consensus instance is associated with a known proposer, the observed
-latency serves as an estimate of that proposer's effectiveness in driving
-consensus progress.
+Since each consensus instance is associated with a known proposer, the observed latency provides an estimate of that proposer's effectiveness at driving consensus progress.
 
-Each node maintains a sliding window $L$ containing the last $k$ observed
-consensus latencies, where $k$ is a configuration parameter. From this window,
-the node continuously computes the average consensus latency $\bar{L}$.
+Each node maintains a sliding window $L$ containing the last $k$ observed consensus latencies, where $k$ is a configuration parameter. 
+From this window, the node continuously computes the average consensus latency $\bar{L}$.
 
-A proposer is then classified relative to this average latency. To avoid
-frequent oscillations caused by transient network jitter, we define a
-deadband threshold $T \in [0,1]$, which creates a neutral region around
-$\bar{L}$ where latency variations are ignored.
+A proposer is then classified relative to this average latency. 
+To avoid frequent oscillations caused by transient network jitter, we define a deadband threshold $T \in [0,1]$, which creates a neutral region around $\bar{L}$ where latency variations are ignored.
 
 Given a latency sample $s$, the proposer is classified as:
-
 \[
 fast \quad \text{if } s < \bar{L}(1 - T)
 \]
@@ -102,98 +35,46 @@ slow \quad \text{if } s > \bar{L}(1 + T)
 \bot \quad \text{otherwise}
 \]
 
-Intuitively, the deadband threshold prevents small latency fluctuations from
-causing unnecessary alternation between \textit{fast} and \textit{slow}
-classifications. Smaller values of $T$ make the mechanism more sensitive to
-performance variations, whereas larger values increase stability by tolerating
-short-term jitter.
+Intuitively, the deadband threshold prevents small latency fluctuations from causing unnecessary alternation between \textit{fast} and \textit{slow} classifications. 
+Smaller values of $T$ make the mechanism more sensitive to performance variations, whereas larger values increase stability by tolerating short-term jitter.
 
-We denote by $c_h \in \{fast, \bot, slow\}$ the resulting classification for a
-consensus height $h$.
+We denote by $c_h \in \{fast, \bot, slow\}$ the resulting classification for a consensus height $h$.
 
 
-\subsection{From local observation to global classification}
+\subsection{From local to global classifications}
 \label{subsec:globalclassification}
 
-The mechanism introduced in Section~\ref{subsec:samplig} allows each node to locally classify proposers as \textit{fast}, \textit{slow}, or neutral ($\bot$). 
-We now show how to transform these local observations into a globally consistent classification that can later be used to bias proposer selection.
-
-Rather than introducing a separate consensus protocol, our approach piggybacks
-classification agreement on top of the existing consensus execution. The
-mechanism operates continuously through three lightweight steps:
-\textit{vote}, \textit{choose}, and \textit{write}.
+We now show how to transform local classifications into a globally consistent classification that can later be used to bias proposer selection.
+Rather than introducing a separate consensus protocol, our approach piggybacks classification information onto the existing consensus execution. 
+The mechanism operates continuously through three lightweight steps: \textit{vote}, \textit{choose}, and \textit{adopt}.
 
 \paragraph{Vote step.}
-After deciding on a consensus instance $h$, each node broadcasts its local classification $c_h$ for the proposer of height $h$. 
+After deciding on the consensus instance $h$, each node forwards its signed local classification $c_h$ for the proposer at height $h$ to the proposer at height $h+1$. 
 This information is sent with the first message at consensus height $h+1$ (e.g., Tendermint's \texttt{prevote}), thereby avoiding additional communication rounds.
-%Voting lasts until the decision for height $h+1$.  
-%The reason for using the decision as a limit is twofold. 
-%First, the synchronization eases the integration of the mechanism and the reuse of messages. %, ensuring scores are updated in a timely manner. 
-%And second, it allows for gathering additional votes beyond the quorum needed to advance the underlying consensus phase.
+
+\fp{THERE'S SOMETHING WRONG HERE, WITH THE HEIGHTS. HOW IS THIS REALLY DONE? WHEN IS TIME TAKEN, ...}
 
 \paragraph{Choose step.}
-At the beginning of height $h+2$, nodes evaluate the classifications received for height $h$. 
-If a node observes at least $2f+1$ matching non-$\bot$ classifications, it broadcasts a signed message supporting that value.
-Otherwise, it broadcasts the neutral classification $\bot$.
+At the beginning of height $h+2$, the proposer evaluates the classifications received for the proposer of height $h$.
+Like in Tendermint, the proposer waits longer to possibly include classifications received from all honest nodes.
+If among all votes received there are at least $2f+1$ matching non-$\bot$ classifications, the proposer chooses the corresponding classification.
+Otherwise, it chooses the neutral classification $\bot$.
+In any case, the proposer includes in the consensus-proposed value its choice, along with the signed votes attesting to the choice.
 
-\paragraph{Write step.}
-At the beginning of height $h+3$, nodes determine the final classification for height $h$. 
-If a quorum of matching signed classifications exists, the corresponding value is accepted. 
-Otherwise, the default classification $\bot$ is adopted.
-
-The proposer of height $h+3$ includes the resulting classification and the supporting signed quorum in their proposal. 
+\paragraph{Adopt step.}
+When the consensus height $h+2$ is reached, every node checks whether the vote is justified and, if so, adopts the proposed classification.
 As a consequence, all honest nodes eventually converge to the same proposer classification history.
 
-%Importantly, the mechanism does not interfere with the underlying consensus protocol. 
-%Classification messages are piggybacked onto existing protocol messages, and the consensus execution proceeds independently of whether a classification is successfully produced.
+\vspace{2mm}
+To understand the need for $2f+1$ matching non-$\bot$ classifications, let $k$ be the actual number of votes the proposer receives, where
+$k = k_{fast} + k_{slow} + k_\bot$.
+At most $f$ of these votes are from Byzantine processes, and there are votes from $(N-k)$ nodes that the proposer does not know about.
+Therefore, to guarantee that there are votes from a majority of honest nodes for \textit{fast} (resp., \textit{slow}), it must be that 
+$k_{fast} - f > k_{slow} + k_\bot + (N - k_{fast} - k_{slow} - k_\bot)$, or $k_{fast} \geq \lceil (n+f)/2 \rceil$, and since $N=3f+1$, 
+$k_{fast} \geq 2f+1$.
 
-Finally, note that all three steps execute concurrently. 
-During consensus height $h$, nodes may simultaneously:
-(i) vote for height $h-1$,
-(ii) choose a classification for height $h-2$, and
-(iii) write the final classification for height $h-3$.
-
-
-%\subsection{M.2 - From local to global classifications}
-%
-%Now, the challenge is to derive, from these local classifications, meaningful global decisions with respect to which nodes are considered fast, slow, or none.  
-%%
-%Our algorithm is based on three steps: \textit{vote}, \textit{choice}, and \textit{write}.   We propose here that these steps are carried out with the underlying consensus algorithm messages and steps, having an implicit trigger associated with it.  Our discussion uses Tendermint, with the following behavior at each node:
-%
-%\begin{itemize}
-%\item \textit{Vote:} upon start of height $h+1$, send $\langle vote,h,c_h \rangle$ to all other nodes.  $c_h$ is the classification already discussed regarding consensus instance at height $h$.   
-%%
-%This vote is sent along with the first message for height $h+1$ to all other nodes  (e.g., Tendermint's prevote).  
-%Voting lasts until the decision for height $h+1$.  
-%The reason for using the decision as a limit is twofold. 
-%First, the synchronization eases the integration of the mechanism and the reuse of messages. %, ensuring scores are updated in a timely manner. 
-%And second, it allows for gathering additional votes beyond the quorum needed to advance the underlying consensus phase.
-%
-%\item \textit{Choice:} upon start of height $h+2$, if a quorum of $2f+1$ \textit{vote} messages for a same non-$\bot$ $value$ is reached,  send a signed message $\langle choose,h,value \rangle_{sig}$ to all other nodes.   Otherwise, send a $\langle choose,h,\bot \rangle$ non-signed message. 
-%As with the voting step, the $choose$ message is sent along the first message for the next height ($h+2$)
-%and its reception lasts until the decision for that height.    
-%
-%
-%\item \textit{Write:}  Upon start of height $h+3$, nodes gather the chosen values and decide the value to write, called $decided_h$.   
-%%
-%If a node has received a quorum of $2f+1$ 
-%\textit{choose} messages for a same non-$\bot$ value,
-%the node decides that value. 
-%Otherwise decides the default value of $\bot$.
-%
-%The proposer of height $h+3$ $write$s with the proposal: the $decided_h$ value; if $decided_h \neq \bot$, the quorum of signed choices; and the updated scores of all nodes.  Scores are discussed in Section \ref{subsec:scores}.  If $decided_h = \bot$, there is no need to record the quorum of signed choices.  
-%% COMPLEMENTAR ISSO ?
-%If a dishonest proposer node may omit, not writing a non-$\bot$ value, an honest next proposer may write the value with the quorum of signed choices justifying it.
-%Each proposer node thus keeps a window of $decided_h$ with their respective set of signed choices justifying the value.
-%
-%Any node, upon receiving a proposal which can be accepted by the underlying consensus algorithm, adds the following: if $decided_h = \bot$, accepts it;  if $decided_h \neq \bot$, accepts if signatures are successfully verified. If not accepted, evidence of dishonest behavior is generated.
-%
-%%A node only votes for the proposal (e.g. Tendermint's block) if the decided value and the updated scores in the proposal match its own values. This is necessary to prevent Byzantine proposers from simply ignoring the last vote. 
-%
-%\end{itemize}
-%
-%Note that all steps can happen simultaneously. During a consensus for height $h$, there can be an ongoing $vote$ step for height $h-1$, a $choice$ step for height $h-2$, and a $write$ step for $h-3$. %This only implies in two extra values (vote and choice) in each node's first message of that height. 
-
+% NOTE: If we change the condition to require more fast votes than slow votes  (instead of a majority of fast votes, as now), we can lower the limit as follows:
+% $k_{fast} - f > k_{slow} + (n - k_{fast} - k_{slow} - k_\bot)$, although in practice this won't make much of a difference.
 
 \subsection{Continuous proposer scoring and prioritization}
 \label{subsec:scores}
@@ -210,6 +91,7 @@ score'_n = trunc_{[-1,1]}(\alpha \cdot decision_n + (1-\alpha) \cdot score_n)
 \]
 where parameter $\alpha$ controls how strongly new observations influence the score. 
 Larger $\alpha$ values make the score react faster to performance changes, whereas smaller $\alpha$ values make scores less sensitive to transient fluctuations.
+Function $trunc_{[-1,1]}()$ ensures that scores are within interval $[-1,1]$.
 
 The resulting score is then combined with the node's stake to bias proposer selection:
 \[
@@ -226,71 +108,166 @@ As a result, proposer selection continuously adapts to observed consensus perfor
 Finally, since the system is decentralized, parameters $\alpha$ and $C$ must remain consistent across nodes. 
 In systems that support dynamic reconfiguration, these parameters may themselves be updated via consensus and recorded in the replicated state.
 
-\subsection{Correctness and Byzantine Fault Tolerance}
+
+\subsection{Properties and correctness}
 \label{subsec:correctness}
 
-The proposed mechanisms should ensure the properties described in the introduction of Section \ref{sec:algorithm}.
-Each one discussed next.
-% \begin{description} 
-%     \item[P.1] the underlying consensus algorithm properties are preserved;     
-%     \item[P.2] disregarding stake, or with a uniform stake distribution, proposer nodes with faster (slower) decisions become proposers proportionally more (less) often;
-%     \item[P.3] changes in a node's relative performance over time lead to respective adaptation of its frequency as proposer;  
-%     \item[P.4] every node eventually becomes proposer;  
-%     \item[P.5] dishonest nodes do not impose an arbitrary sequence of proposers;
-%     \item[P.6] dishonest nodes do not hinder the differentiation of faster/slower nodes. 
-% \end{description}
+We now argue that the proposed mechanism satisfies the following properties.
 
-\paragraph{Argument for P.1:} 
-Regarding the properties of the underlying consensus algorithm, notice that the proposed mechanisms do not modify the algorithm.   Messages and the value proposed are conservatively extended with votes and scores,  these being processed by mechanisms separated from the underlying algorithm.  The proposed mechanisms also do not prevent the progress of the underlying algorithm: whenever 
-phase or height change may occur, the proposed mechanisms proceed with the values computed so far.  
+We define a \textit{good run} as an execution in which every honest proposer receives classification votes from all honest processes.
 
-The only aspect impacted is the choice of next proposer.
-The structure of the function to choose the next proposer is preserved, however being parameterized with weighted stakes according to respective nodes performance, instead of stakes only. As the weighted scheme, by definition, does not nullify any stake, every node is eventually chosen as proposer. 
+\begin{itemize}
+\item[P.1] The safety and liveness properties of the underlying consensus algorithm are preserved.
 
-\paragraph{Argument for P.2:} 
-As discussed in Section \ref{subsec:scores} the $score_n$ of a node $n$ increases each time it is voted $fast$, leading to a multiplication of $stake_n$ by a factor $> 1$, that then results in proportionally augmented $weight_n$.   The weights of all nodes then substitute their original stakes in the $nextProposer$ function, leading to a more frequent choice of nodes according to their weight. 
+\item[P.2] Proposers associated with faster (slower) consensus decisions become proposers more (less) frequently.
 
-\paragraph{Argument for P.3:} 
-The proposed mechanisms continuously sample consensus latencies, adjusting scores.
-The $\beta$ parameter serves to decay the importance of old samples in the current score while $\alpha$ denotes the impact of new decisions.  With this, scores adapt to changing performance observations, leading to the desired impact in the $nextProposer$ choice.
+\item[P.3] Changes in the relative performance of proposers over time lead to corresponding adaptations in proposer frequency.
 
-\paragraph{Argument for P.4:} 
-This property derives from assumption A.1 and A.2 on the $nextProposer$ function, implying that nodes are chosen as proposers proportionally to their stake, and the fact that the scoring mechanism does not annulate any stake, but differentiates them according to the node's performance.  
+\item[P.4] Every honest node eventually becomes a proposer.
 
-\paragraph{Argument for P.5:} 
-A non-$\bot$ value is written if $2f+1$ nodes choose that value.  Among those, at least $f+1$, a majority, is comprised by honest nodes, by definition.  This means that dishonest nodes cannot impose a non-$\bot$ value not supported by a majority of honest ones.
+\item[P.5] If all honest processes classify proposer $P$ as $x \in \{ \textit{fast}, \textit{slow}\}$, and the proposer responsible for choosing the classification is honest and executes in a good run, then $P$ is eventually adopted as $x$.
 
+\item[P.6] A proposer is adopted as $x \in \{ \textit{fast}, \textit{slow}\}$ only if at least a majority of honest processes classify it as $x$.
+\end{itemize}
 
-\paragraph{Argument for P.6:} 
-Since there are at least $2f+1$ honest nodes, if they choose the same non-$\bot$ value, 
-then this value is eventually written by an honest proposer irrespective of dishonest nodes choices
-or dishonest proposers omitting the value.
+\paragraph{Argument for P.1.}
+The proposed mechanism does not modify the underlying consensus algorithm.
+Instead, it piggybacks signed classification votes onto existing protocol messages and processes them independently from consensus execution. 
+Moreover, the mechanism does not introduce any additional coordination that could block consensus progress. 
+Therefore, the safety and liveness properties of the underlying consensus protocol are preserved.
 
-\paragraph{Impact of dishonest behavior while voting:}
+\paragraph{Argument for P.2.}
+The score $score_P$ of proposer $P$ increases when the proposer is classified as \textit{fast}, and decreases when it is classified as \textit{slow} (Section~\ref{subsec:scores}). 
+Since proposer weights are computed as $weight_P = stake_P \cdot (1 + C \cdot score_P)$, higher-performing proposers eventually receive larger weights and therefore become more likely to be selected by the deterministic \textit{nextProposer} function.
 
-Properties P.5 and P.6 leave room for dishonest nodes impacting the decision if
-the number of honest nodes choices $hc$ for a same non-$\bot$ value is $f+1 \leq hc < 2f+1$.
+\paragraph{Argument for P.3.}
+The mechanism continuously updates proposer scores using recent consensus observations. 
+Parameter $\alpha$ controls how strongly new classifications affect the score, while older observations are progressively discounted. 
+Consequently, changes in proposer performance over time are reflected in the corresponding weights and proposer frequencies.
 
-However, notice that dishonest nodes choices are limited: 
-%In the \textit{vote} step, each node awaits for a quorum of other nodes. 
-A node only chooses a non-$\bot$ value in the \textit{choice} step if it received a quorum of that value in the \textit{vote} step. 
-As any two quorums have an overlap of at least one honest node, it is impossible for there to be two conflicting quorums. At the end of this step each node will either have a quorum of the same non-$\bot$ value, or default to $\bot$ if a quorum has not been received.  In the first case, a dishonest node sending a non-$\bot$ choice contradicting the quorum value would immediately generate evidence of dishonest behavior.
-%This reduces the next step into a binary decision. 
+\paragraph{Argument for P.4.}
+Every proposer $P$ retains a strictly positive weight since $score_P \in [-1,1]$ and $C < 1$. 
+Therefore, no proposer is permanently excluded from proposer selection. 
+Since the underlying \textit{nextProposer} mechanism rotates among all positive weights, every honest node eventually becomes a proposer.
+
+\paragraph{Argument for P.5.}
+Let $Q$ be the honest proposer responsible for choosing the classification of proposer $P$. 
+Without loss of generality, assume that all honest processes classify $P$ as \textit{fast}. 
+Since there are $2f+1$ honest processes and the run is good, $Q$ receives $2f+1$ matching signed classifications for \textit{fast}, independently of any Byzantine votes. 
+Therefore, the condition for choosing a non-$\bot$ classification is satisfied, and $Q$ includes the classification \textit{fast} together with the supporting signed votes in the proposed value.
+Since the proposal is decided by consensus, all honest processes eventually adopt the classification \textit{fast}. The argument for \textit{slow} is symmetric.
+
+\paragraph{Argument for P.6.}
+Assume proposer $P$ is adopted as \textit{fast}. 
+Then, some proposer $Q$ must have proposed a valid classification supported by at least $\lceil (n+f)/2 \rceil$ matching signed classifications for \textit{fast} (Section~\ref{subsec:globalclassification}).
+
+Let $k_h$ and $k_b$ denote the number of received \textit{fast} classifications originating from honest and Byzantine processes, respectively.
+Thus,
+
+\[
+k_h + k_b \geq \left\lceil \frac{n+f}{2} \right\rceil.
+\]
+
+Since at most $f$ processes are Byzantine, we have $k_b \leq f$. Therefore,
+
+\[
+k_h
+\geq
+\left\lceil \frac{n+f}{2} \right\rceil - f.
+\]
+
+Using $n = 3f+1$, we obtain
+
+\[
+k_h
+\geq
+\left\lceil \frac{4f+1}{2} \right\rceil - f
+=
+(2f+1)-f
+=
+f+1.
+\]
+
+Since there are $2f+1$ honest processes, at least $f+1$ honest classifications constitute a majority of honest processes. 
+Therefore, a proposer can only be adopted as \textit{fast} (resp., \textit{slow}) if a majority of honest processes classified it as \textit{fast} (resp., \textit{slow}).
+
+%\subsection{Correctness}
+%\label{subsec:correctness}
 %
-This means that colluding dishonest nodes may either add choices to a majority of honest nodes 
-to accept their non-$\bot$ value, or not, keeping the $\bot$ decision.      
-Keeping the $\bot$ decision does not harm performance,  while accepting the non-$\bot$ value
-would enhance the performance observed by a majority of honest nodes.
+%We now argue that the proposed mechanism satisfies the following properties:
+%
+%\begin{itemize}
+%    \item[P.1] The safety and liveness properties of the underlying consensus algorithm are preserved.
+%    
+%    \item[P.2] Proposers associated with faster (slower) consensus decisions become proposers proportionally more (less) often.
+%    
+%    \item[P.3] Changes in the relative performance of proposers over time lead to corresponding adaptations in proposer frequency.
+%    
+%    \item[P.4] Every honest node eventually becomes a proposer.
+%    
+%    \item[P.5] Byzantine nodes cannot arbitrarily impose proposer sequences.
+%    
+%    \item[P.6] Byzantine nodes cannot prevent the differentiation between faster and slower proposers.
+%\end{itemize}
+%
+%
+%\paragraph{Argument for P.1:} 
+%This follows immediately since the proposed mechanisms simply piggyback additional information (i.e., signed votes) to existing protocol messages.
+%
+%\paragraph{Argument for P.2:} 
+%As discussed in Section \ref{subsec:scores} the $score_n$ of a node $n$ increases each time it is voted $fast$, leading to a multiplication of $stake_n$ by a factor $> 1$, that then results in proportionally augmented $weight_n$.   The weights of all nodes then substitute their original stakes in the $nextProposer$ function, leading to a more frequent choice of nodes according to their weight. 
+%
+%\paragraph{Argument for P.3:} 
+%The proposed mechanisms continuously sample consensus latencies, adjusting scores.
+%The $\beta$ parameter serves to decay the importance of old samples in the current score while $\alpha$ denotes the impact of new decisions.  With this, scores adapt to changing performance observations, leading to the desired impact in the $nextProposer$ choice.
+%
+%\paragraph{Argument for P.4:} 
+%This property derives from assumption A.1 and A.2 on the $nextProposer$ function, implying that nodes are chosen as proposers proportionally to their stake, and the fact that the scoring mechanism does not annulate any stake, but differentiates them according to the node's performance.  
+%
+%\paragraph{Argument for P.5:} 
+%Let $Q$ be an honest proposer responsible for recording $P$'s classification.
+%Without loss of generality, assume that all honest processes classify $P$ as
+%\textit{fast}. Since there are $2f+1$ honest processes, and the execution is a
+%good run, $Q$ receives $2f+1$ matching classification votes for \textit{fast}.
+%Thus, independently of any Byzantine votes, $Q$ has a quorum supporting
+%\textit{fast}. Since $Q$ is honest, it records $P$'s classification as
+%\textit{fast}. The argument for \textit{slow} is symmetric.
+%
+%\paragraph{Argument for P.6:} 
+%Assume that proposer $Q$ records $P$ as \textit{fast}.
+%Thus, $Q$ received $k_{fast} > (n + f) / 2$ \textit{fast} votes.
+%Let $k_h$ and $k_b$ be the \textit{fast} votes $Q$ receives, respectively, from honest and Byzantine processes, that is, $k_{fast} = k_h + k_b$, where $k_b \leq f$.
+%We claim that $k_h \geq f+1$.
+%From the above, we have that $k_h + f > (n + f) / 2$, which, from the fact that $n=3f+1$, results in $k>f+1$.
+%
 
-\paragraph{Impact of dishonest behavior while proposing:}
-In the role of proposer, a written non-$\bot$ value is accompanied by the signed choices justifying the quorum.
-Any modification of the agreed value would generate clear evidence of misbehavior by the proposer as
-different signed choices from a same dishonest node would be available at honest nodes.
 
-A dishonest proposer may write $\bot$ (which does not need the accompanying signed choices), 
-omitting a quorum of a non-$\bot$ value.   However, any honest next proposer can write the omitted 
-non-$\bot$ value and the respective signed choices, proving the value.   In practice, the omission 
-by the dishonest node leads just to postponing the adoption of the value.
+
+%\paragraph{Impact of dishonest behavior while voting:}
+%
+%Properties P.5 and P.6 leave room for dishonest nodes impacting the decision if
+%the number of honest nodes choices $hc$ for a same non-$\bot$ value is $f+1 \leq hc < 2f+1$.
+%
+%However, notice that dishonest nodes choices are limited: 
+%%In the \textit{vote} step, each node awaits for a quorum of other nodes. 
+%A node only chooses a non-$\bot$ value in the \textit{choice} step if it received a quorum of that value in the \textit{vote} step. 
+%As any two quorums have an overlap of at least one honest node, it is impossible for there to be two conflicting quorums. At the end of this step each node will either have a quorum of the same non-$\bot$ value, or default to $\bot$ if a quorum has not been received.  In the first case, a dishonest node sending a non-$\bot$ choice contradicting the quorum value would immediately generate evidence of dishonest behavior.
+%%This reduces the next step into a binary decision. 
+%%
+%This means that colluding dishonest nodes may either add choices to a majority of honest nodes 
+%to accept their non-$\bot$ value, or not, keeping the $\bot$ decision.      
+%Keeping the $\bot$ decision does not harm performance,  while accepting the non-$\bot$ value
+%would enhance the performance observed by a majority of honest nodes.
+%
+%\paragraph{Impact of dishonest behavior while proposing:}
+%In the role of proposer, a written non-$\bot$ value is accompanied by the signed choices justifying the quorum.
+%Any modification of the agreed value would generate clear evidence of misbehavior by the proposer as
+%different signed choices from a same dishonest node would be available at honest nodes.
+%
+%A dishonest proposer may write $\bot$ (which does not need the accompanying signed choices), 
+%omitting a quorum of a non-$\bot$ value.   However, any honest next proposer can write the omitted 
+%non-$\bot$ value and the respective signed choices, proving the value.   In practice, the omission 
+%by the dishonest node leads just to postponing the adoption of the value.
 
 
 
