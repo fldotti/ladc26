@@ -66,11 +66,11 @@ When the consensus height $h+2$ is reached, every node checks whether the vote i
 As a consequence, all honest nodes eventually converge to the same proposer classification history.
 
 \vspace{2mm}
-To understand the need for $2f+1$ matching non-$\bot$ classifications, let $k$ be the actual number of votes the proposer receives, where
+To understand the need for $2f+1$ matching non-$\bot$ classifications, let $k$ be the number of votes the proposer receives, where
 $k = k_{fast} + k_{slow} + k_\bot$.
 At most $f$ of these votes are from Byzantine processes, and there are votes from $(N-k)$ nodes that the proposer does not know about.
 Therefore, to guarantee that there are votes from a majority of honest nodes for \textit{fast} (resp., \textit{slow}), it must be that 
-$k_{fast} - f > k_{slow} + k_\bot + (N - k_{fast} - k_{slow} - k_\bot)$, or $k_{fast} \geq \lceil (n+f)/2 \rceil$, and since $N=3f+1$, 
+$k_{fast} - f > k_{slow} + k_\bot + (N - k_{fast} - k_{slow} - k_\bot)$, or $k_{fast} \geq \lceil (N+f)/2 \rceil$, and since $N=3f+1$, 
 $k_{fast} \geq 2f+1$.
 
 % NOTE: If we change the condition to require more fast votes than slow votes  (instead of a majority of fast votes, as now), we can lower the limit as follows:
@@ -89,7 +89,7 @@ Scores evolve according to the following exponential averaging recurrence:
 \[
 score'_n = trunc_{[-1,1]}(\alpha \cdot decision_n + (1-\alpha) \cdot score_n)
 \]
-where parameter $\alpha$ controls how strongly new observations influence the score. 
+where parameter $\alpha$, $0 \leq \alpha \leq 1$, controls how strongly new observations influence the score. 
 Larger $\alpha$ values make the score react faster to performance changes, whereas smaller $\alpha$ values make scores less sensitive to transient fluctuations.
 Function $trunc_{[-1,1]}()$ ensures that scores are within interval $[-1,1]$.
 
@@ -97,7 +97,7 @@ The resulting score is then combined with the node's stake to bias proposer sele
 \[
 weight_n = stake_n \cdot (1 + C \cdot score_n)
 \]
-where parameter $C \in [0,1)$ controls how strongly observed performance influences proposer selection relative to stake. 
+where parameter $C$, $0 \leq C < 1$, controls how strongly observed performance influences proposer selection relative to stake. 
 When $C = 0$, proposer selection depends only on the stake. 
 As $C$ increases, higher-performing nodes become proportionally more likely to be selected as proposers. 
 Since $score_n \in [-1,1]$ and $C < 1$, every node always retains a strictly positive weight and therefore remains eligible to become a proposer.

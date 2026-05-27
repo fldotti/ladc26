@@ -1,7 +1,10 @@
 \section{Experimental Evaluation}
 \label{sec:experiments}
 
-To validate the proposed mechanism, we utilized an oracle-based experimental methodology. We first executed the Malachite protocol using standard round-robin rotation to establish a baseline. From the resulting logs, we simulated the score-calculation algorithm to generate an optimized proposer sequence. Finally, we re-executed the protocol using this new sequence to measure performance gains. This iterative process was repeated up to six times (\textit{alg-1} through \textit{alg-6}) to observe score stabilization. 
+To validate the proposed mechanism, we utilized an oracle-based experimental methodology. 
+We first executed the Malachite protocol using standard round-robin rotation to establish a baseline. 
+From the resulting logs, we simulated the score-calculation algorithm to generate an optimized proposer sequence. 
+Finally, we re-executed the protocol using this new sequence to measure performance gains. This iterative process was repeated up to six times (\textit{alg-1} through \textit{alg-6}) to observe score stabilization. 
 
 %[???  modificou o proposto antes ????   como o leitor entende ????   gastou tempo do leitor explicando la, agora muda nao sei por que...  ]  
 %For these evaluations, we measured \textit{block time} rather than consensus duration, as block time accounts for the full interval from height start to decision, providing a more realistic metric for production environments.
