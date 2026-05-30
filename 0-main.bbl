@@ -39,6 +39,12 @@ Huang, D., Huang, Y., Yang, Y.: Improved pbft consensus algorithm based on node
   International Conference on Big Data Economy and Information Management. pp.
   851--855 (2023)
 
+\bibitem{Kruskal01121952}
+Kruskal, W.H., Wallis, W.A.: Use of ranks in one-criterion variance analysis.
+  Journal of the American Statistical Association  \textbf{47}(260),  583--621
+  (1952). \doi{10.1080/01621459.1952.10483441},
+  \url{https://doi.org/10.1080/01621459.1952.10483441}
+
 \bibitem{nakamoto2008bitcoin}
 Nakamoto, S.: Bitcoin whitepaper. URL: https://bitcoin. org/bitcoin. pdf-(:
   17.07. 2019)  \textbf{9}, ~15 (2008)
