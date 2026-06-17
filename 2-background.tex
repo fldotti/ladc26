@@ -54,6 +54,7 @@ Moreover, modern blockchain deployments already incorporate mechanisms to detect
 %\vspace{-3mm}
 \begin{table}[h!]
 \centering
+\begin{threeparttable}
  \scriptsize 
 \newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
 \newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
@@ -83,7 +84,7 @@ N\\
 C&
 N&
 Per-node consensus latency measured through active probing by clients&
-Y\footnote{Multiple consensus.}&
+Y\tablefootnote{Multiple consensus.}&
 Y &
 N &
 N \\
@@ -126,7 +127,7 @@ Latency measurements combined with reputation signals &
 Y &
 N &
 Y &
-N\footnote{The \cite{wen2025mapbft} primary is the node with the most voting power. If  voting power changes, a new node can become the primary even without suspected failure. However, the algorithm does not perform intentional leader rotation}\\
+N\tablefootnote{The \cite{wen2025mapbft} primary is the node with the most voting power. If  voting power changes, a new node can become the primary even without suspected failure. However, the algorithm does not perform intentional leader rotation}\\
 
 \hline
 \cite{yu2024adaptive} &
@@ -136,7 +137,7 @@ Observed leader throughput during evaluation windows &
 N &
 Y &
 N &
-E\\
+N\\
 \hline
 
 \cite{zhang2024prestigebft} &
@@ -144,7 +145,7 @@ C&
 N&
 Historical leader success, measured by committed blocks&
 Y&
-Y\footnote{For systems without leader rotation.} &
+Y\tablefootnote{For systems without leader rotation.} &
 Y &
 N \\
 \hline
@@ -183,15 +184,18 @@ P\\
 \caption{Comparison of leader selection strategies}
 \begin{tablenotes}
 \small
-\item Legend: Continuous (C) scores allow fine-grained proposer differentiation, while Discrete (D) scores classify nodes into categories. Committee Eviction indicates whether nodes may be removed from the active consensus committee. Proportional (P) rotation biases proposer frequency according to performance, whereas Equal (E) rotation preserves uniform proposer frequency among eligible nodes.
+\item Legend: Continuous (C) scores allow fine-grained proposer differentiation, while Discrete (D) scores classify nodes into categories. Committee Eviction indicates whether nodes may be removed from the active consensus committee. Proportional (P) rotation biases proposer frequency according to performance, whereas No rotation (N) maintains the primary/proposer until a view change is proposed.
 \end{tablenotes}
 \label{related}
+
+\end{threeparttable}
 \end{table} 
 
 The surveyed literature also differs in how it treats proposer fairness. 
 Many PBFT-derived optimizations effectively converge toward fixed or weakly rotating leaders, increasing susceptibility to censorship and centralization. 
-Yu et al. \cite{yu2024adaptive} partially address this issue by enforcing equal rotation among nodes above a performance threshold. 
+%Yu et al. \cite{yu2024adaptive} partially address this issue by enforcing equal rotation among nodes above a performance threshold. 
 Our approach instead adopts proportional prioritization: higher-performing nodes are selected more frequently, while all nodes remain eligible proposers. This preserves continuous rotation while still exploiting topology-aware performance asymmetries.
+[OUR APPROACH CAN, DEPENDING ON THE CONFIGURED VALUES (E.G. ALLOWING SCORE TO BE UP TO +-100\% OF STAKE), REMOVE NODES FROM ROTATION (BUT KEEP THEM IN THE COMMITTEE). THIS IS INTENTIONAL AND ALLOWS FOR MAXIMUM THROUGHPUT AT THE COST OF CENSORSHIP RESILIENCE]
 
 Finally, existing work generally treats proposer performance as an abstract property associated with computational speed or node responsiveness, with limited investigation into how network topology shapes consensus execution. 
 Our experiments show that proposer placement directly affects overall consensus latency, influencing the duration of subsequent protocol phases. 
