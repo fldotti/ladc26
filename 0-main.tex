@@ -82,28 +82,9 @@ achieves throughput gains of up to 80\% compared to node-removal baselines, with
 \input{2-background}
 \input{3-impactStudy}
 \input{4-algorithm}
-\input{5-experiments}
+%\input{5-experiments}
+\input{5-conclusions}
 
-\section{Conclusion}
-
---- to be written 
-
-Note that this is an experiment with only 13 nodes, while Cosmos, a large scale implementation of Tendermint, is expected to have up to 180 nodes in the committee\footnote{\url{https://docs.cosmos.network/hub/latest/validators/overview}}. It is possible that a single fixed proposer could suffer additional overhead at that scale. Nevertheless, reducing the proposer pool to a smaller subset, excluding only the most disproportionally slow nodes, could still be a realistic approach. 
-
-
-----
-In this paper we study how the position of a proposer within a topology affects distributed consensus, and propose a generic mechanism to improve performance through leader selection. As our research focuses on Tendermint, further research on other consensus algorithms is warranted to validate these findings and explore potential edge cases. In particular, algorithms such as HotStuff, with its more involved leader, are expected to have more pronounced leader impact on consensus. 
-
-Finally, our mechanism is shown to improve performance with no measurable overhead. Nevertheless, several areas could be explored further, such as the impact of individual parameters and possible improvements. In particular, a more nuanced vote could lead to  additional performance improvements. 
-
-\begin{credits}
-%\subsubsection{\ackname} A bold run-in heading in small font size at the end of the paper isused for general acknowledgments, for example: This study was funded by X (grant number Y).
-
-\subsubsection{\discintname}
-The authors have no competing interests to declare that are
-relevant to the content of this article. 
-
-\end{credits}
 %
 % ---- Bibliography ----
 %

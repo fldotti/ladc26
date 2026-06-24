@@ -1,0 +1,43 @@
+\section{Discussion and future work}
+
+This paper makes two main contributions. 
+First, we experimentally characterize the impact of proposer location on geo-distributed Byzantine consensus. 
+Our results show that the proposer is a first-order determinant of consensus performance: its position within the network topology influences not only the duration of the proposal phase itself, but also the composition of quorums and, consequently, the duration of subsequent consensus phases. 
+Depending on the topology, the choice of proposer can increase consensus latency by up to 40\%, demonstrating that proposer placement is an important yet often overlooked aspect of geo-distributed deployments.
+
+Second, we introduce a generic performance-aware proposer prioritization mechanism that continuously adapts proposer frequency according to observed consensus performance. 
+The mechanism preserves the original Byzantine fault-tolerance guarantees, introduces no additional communication rounds, and can be integrated into existing rotating-leader state machine replication protocols with minimal modifications. 
+Although our evaluation focuses on Tendermint, the proposed approach is independent of any specific consensus protocol and is applicable to a broader class of rotating-leader systems.
+
+Several directions remain for future work. 
+First, we intend to implement the complete proposer prioritization mechanism within the Malachite codebase and perform a large-scale evaluation. 
+Our goal is to deploy experiments on a local cluster with emulated wide-area latencies that reproduce realistic Cosmos network conditions and validator topologies. 
+This will allow us to study the behavior of the mechanism at scales approaching production deployments, which may involve committees with up to 180 validators.\footnote{\url{https://docs.cosmos.network/hub/latest/validators/overview}}
+
+Second, a large-scale evaluation will enable us to investigate several open questions that cannot be fully addressed in the current study. 
+In particular, we intend to analyze the mechanism's sensitivity to its configuration parameters, evaluate its robustness under dynamic network conditions, and assess the trade-offs between fairness and performance when only a subset of the slowest proposers is deprioritized. 
+Such an evaluation will provide a better understanding of the practical limits and benefits of performance-aware proposer selection in real-world blockchain systems.
+
+
+
+
+%In this paper, we study how a proposer's location within a topology affects distributed consensus and propose a generic mechanism to improve performance via leader selection. As our research focuses on Tendermint, further research on other consensus algorithms is warranted to validate these findings and explore potential edge cases. In particular, algorithms such as HotStuff, with its more involved leader, are expected to have more pronounced leader impact on consensus. 
+%
+%Finally, our mechanism is shown to improve performance with no measurable overhead. Nevertheless, several areas could be explored further, such as the impact of individual parameters and possible improvements. In particular, a more nuanced vote could lead to additional performance improvements. 
+%
+%
+%We intend to modify Malachite to integrate our optimizations and conduct a large-scale performance evaluation, possibly using a local cluster and emulated latencies, to resemble Cosmos.
+%
+%Cosmos, a large-scale implementation of Tendermint, is expected to have up to 180 nodes in the committee\footnote{\url{https://docs.cosmos.network/hub/latest/validators/overview}}. It is possible that a single fixed proposer could suffer additional overhead at that scale. Nevertheless, reducing the proposer pool to a smaller subset, excluding only the most disproportionally slow nodes, could still be a realistic approach. 
+
+
+
+
+%\begin{credits}
+%%\subsubsection{\ackname} A bold run-in heading in small font size at the end of the paper isused for general acknowledgments, for example: This study was funded by X (grant number Y).
+%
+%\subsubsection{\discintname}
+%The authors have no competing interests to declare that are
+%relevant to the content of this article. 
+%
+%\end{credits}
