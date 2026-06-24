@@ -20,25 +20,25 @@ Since each consensus instance is associated with a known proposer, the observed 
 
 Each node maintains a sliding window $L$ containing the last $k$ observed consensus latencies, where $k$ is a configuration parameter. 
 From this window, the node continuously computes the average consensus latency $\bar{L}$.
-
 A proposer is then classified relative to this average latency. 
-To avoid frequent oscillations caused by transient network jitter, we define a deadband threshold $T \in [0,1]$, which creates a neutral region around $\bar{L}$ where latency variations are ignored.
+
+%To avoid frequent oscillations caused by transient network jitter, we define a deadband threshold $T \in [0,1]$, which creates a neutral region around $\bar{L}$ where latency variations are ignored.
 
 Given a latency sample $s$, the proposer is classified as:
 \[
-fast \quad \text{if } s < \bar{L}(1 - T)
+fast \quad \text{if } s \leq \bar{L}%(1 - T)
 \]
 \[
-slow \quad \text{if } s > \bar{L}(1 + T)
+slow \quad \text{if } s > \bar{L}%(1 + T)
 \]
-\[
-\bot \quad \text{otherwise}
-\]
+%\[
+%\bot \quad \text{otherwise}
+%\]
 
-Intuitively, the deadband threshold prevents small latency fluctuations from causing unnecessary alternation between \textit{fast} and \textit{slow} classifications. 
-Smaller values of $T$ make the mechanism more sensitive to performance variations, whereas larger values increase stability by tolerating short-term jitter.
+%Intuitively, the deadband threshold prevents small latency fluctuations from causing unnecessary alternation between \textit{fast} and \textit{slow} classifications. 
+%Smaller values of $T$ make the mechanism more sensitive to performance variations, whereas larger values increase stability by tolerating short-term jitter.
 
-We denote by $c_h \in \{fast, \bot, slow\}$ the resulting classification for a consensus height $h$.
+We denote by $c_h \in \{fast, slow\}$ the resulting classification for a consensus height $h$.
 
 
 \subsection{From local to global classifications}
@@ -46,31 +46,46 @@ We denote by $c_h \in \{fast, \bot, slow\}$ the resulting classification for a c
 
 We now show how to transform local classifications into a globally consistent classification that can later be used to bias proposer selection.
 Rather than introducing a separate consensus protocol, our approach piggybacks classification information onto the existing consensus execution. 
-The mechanism operates continuously through three lightweight steps: \textit{vote}, \textit{choose}, and \textit{adopt}.
+The mechanism operates continuously through two lightweight steps: \textit{vote}, \textit{propose}, and \textit{adopt}.
 
 \paragraph{Vote step.}
-After deciding on the consensus instance $h$, each node forwards its signed local classification $c_h$ for the proposer at height $h$ to the proposer at height $h+1$. 
-This information is sent with the first message at consensus height $h+1$ (e.g., Tendermint's \texttt{prevote}), thereby avoiding additional communication rounds.
+Once the node reaches a decision on height $h$ that nodes calculates the consensus duration and compares it to the average to obtain its local $c_h$ vote for that height. This value is only calculated once and a honest node will never change a previous vote for any reason. The node then sends its local $c_h$ along with the first consensus message (e.g. tendermint's \texttt{prevote}) for the height $h+1$, thereby avoiding additional communication rounds. 
 
-\fp{THERE'S SOMETHING WRONG HERE, WITH THE HEIGHTS. HOW IS THIS REALLY DONE? WHEN IS TIME TAKEN, ...}
+This vote contains the height which it refers to, its vote, and a criptographic signature for the vote. 
+[MENTION THAT HAVING A SIGNATURE JUST FOR THE VOTE SIMPLIFIES DECISION PROPOSAL? E.G. PROPOSER CAN JUST SEND VOTE,HEIGHT AND SIGNATURES FOR THAT PAIR TO PROVE IT]
+
+%\fp{THERE'S SOMETHING WRONG HERE, WITH THE HEIGHTS. HOW IS THIS REALLY DONE? WHEN IS TIME TAKEN, ...}
 
 \paragraph{Choose step.}
-At the beginning of height $h+2$, the proposer evaluates the classifications received for the proposer of height $h$.
-Like in Tendermint, the proposer waits longer to possibly include classifications received from all honest nodes.
-If among all votes received there are at least $2f+1$ matching non-$\bot$ classifications, the proposer chooses the corresponding classification.
-Otherwise, it chooses the neutral classification $\bot$.
-In any case, the proposer includes in the consensus-proposed value its choice, along with the signed votes attesting to the choice.
+At the beginning of height $h+2$, the proposer evaluates the classifications received for the proposer of height $h$, reaching one of three states
+\begin{enumerate}
+\item The proposer receives enough votes for a decision $d_h \in \{fast, slow\}$; It then proses $d_h$.
+\item The proposer receives at least $F+1$ votes for $fast$ and at least $F+1$ votes for slow, making a decision impossible; It then proposes $\bot$ (non-decision).
+\item The proposer does not receive enough votes to reach a decision; Consensus proceeds as normal but without any decision attached. 
+\end{enumerate}
+In cases 1 and 2 the proposer must send valid signatures to validate its proposal. The lack of signatures, or invalid signatures, is a Byzantine behavior which invalidates the block and must be detected by existing Byzantine detection mechanisms. 
+
+Should this decision fail (case 3), any future proposer can then re-propose a past $d_h$ value for any height $h$ with no decision. [MENTION THAT IN PRACTICE THIS SHOULD BE LIMITED TO CURHEIGHT-N?] If nodes reach different decisions (e.g. due to Byzantine equivocation), the value that is proposed and accepted first is accepted. 
+%Like in Tendermint, the proposer waits longer to possibly include classifications received from all honest nodes.
+%If among all votes received there are at least $2f+1$ matching non-$\bot$ classifications, the proposer chooses the corresponding classification.
+%Otherwise, it chooses the neutral classification $\bot$.
+%In any case, the proposer includes in the consensus-proposed value its choice, along with the signed votes attesting to the choice.
 
 \paragraph{Adopt step.}
-When the consensus height $h+2$ is reached, every node checks whether the vote is justified and, if so, adopts the proposed classification.
+After a consensus with a valid $d_h \in \{fast, slow\}$ is committed, each node updates its local score accordingly, changing its internal values for the proposer selection algorithm. 
 As a consequence, all honest nodes eventually converge to the same proposer classification history.
 
+[DO WE STILL NEED TO EXPLAIN THIS NOW THAT WE ARE GOING WITH A BINARY DECISION?]
 \vspace{2mm}
-To understand the need for $2f+1$ matching non-$\bot$ classifications, let $k$ be the number of votes the proposer receives, where
-$k = k_{fast} + k_{slow} + k_\bot$.
+To understand the need for $2f+1$ matching 
+%non-$\bot$ 
+classifications, let $k$ be the number of votes the proposer receives, where
+$k = k_{fast} + k_{slow}$% + k_\bot$.
 At most $f$ of these votes are from Byzantine processes, and there are votes from $(N-k)$ nodes that the proposer does not know about.
 Therefore, to guarantee that there are votes from a majority of honest nodes for \textit{fast} (resp., \textit{slow}), it must be that 
-$k_{fast} - f > k_{slow} + k_\bot + (N - k_{fast} - k_{slow} - k_\bot)$, or $k_{fast} \geq \lceil (N+f)/2 \rceil$, and since $N=3f+1$, 
+$k_{fast} - f > k_{slow} + k_\bot + (N - k_{fast} - k_{slow}
+% - k_\bot
+)$, or $k_{fast} \geq \lceil (N+f)/2 \rceil$, and since $N=3f+1$, 
 $k_{fast} \geq 2f+1$.
 
 % NOTE: If we change the condition to require more fast votes than slow votes  (instead of a majority of fast votes, as now), we can lower the limit as follows:
@@ -83,13 +98,15 @@ The goal of the scoring mechanism is to slightly bias proposer selection toward 
 
 Each node $n$ maintains a continuous score $score_n \in [-1,1]$ representing the recent observed performance of a proposer. 
 Scores are continuously updated according to the classifications produced by the mechanism described in the previous section.
-We define $decision_n \in \{-1,0,1\}$, where: $slow = -1$, $\bot = 0$, and $fast = 1$.
+We define $decision_n \in \{-1,1\}$, where: $slow = -1$ and $fast = 1$. $\bot$ decisions do not require score updates. 
+
+[DECISIONS ARE AFFECTED BY THE AVERAGE AND AVERAGE IS AFFECTED BY THE SCORE. $\bot$ IMPLIES THE PROPOSER'S SCORE IS LIKELY GOOD GIVEN THE CURRENT AVERAGE, AND THEREFORE DOESN'T REQUIRE CHANGE. SHOULD WE ARGUE THIS OR JUST MENTION THAT WE DON'T UPDATE ON $\bot$?]
 
 Scores evolve according to the following exponential averaging recurrence:
 \[
-score'_n = trunc_{[-1,1]}(\alpha \cdot decision_n + (1-\alpha) \cdot score_n)
+score'_n = trunc_{[-1,1]}(\alpha \cdot decision_n + ((1-\alpha)+\beta) \cdot score_n)
 \]
-where parameter $\alpha$, $0 \leq \alpha \leq 1$, controls how strongly new observations influence the score. 
+where parameter $\alpha$, $0 \leq \alpha \leq 1$, controls how strongly new observations influence the score. $\beta$ is a bias value, which adds additional value to new observations, enabling faster convergence. 
 Larger $\alpha$ values make the score react faster to performance changes, whereas smaller $\alpha$ values make scores less sensitive to transient fluctuations.
 Function $trunc_{[-1,1]}()$ ensures that scores are within interval $[-1,1]$.
 
@@ -105,7 +122,7 @@ Since $score_n \in [-1,1]$ and $C < 1$, every node always retains a strictly pos
 The deterministic \texttt{nextProposer} function of the underlying consensus algorithm is then executed using $weight_n$ instead of the original $stake_n$.
 As a result, proposer selection continuously adapts to observed consensus performance while preserving the original proposer rotation mechanism.
 
-Finally, since the system is decentralized, parameters $\alpha$ and $C$ must remain consistent across nodes. 
+Finally, since the system is decentralized, parameters $\alpha$, $\beta$, and $C$ must remain consistent across nodes. 
 In systems that support dynamic reconfiguration, these parameters may themselves be updated via consensus and recorded in the replicated state.
 
 
@@ -129,6 +146,8 @@ We define a \textit{good run} as an execution in which every honest proposer rec
 
 \item[P.6] A proposer is adopted as $x \in \{ \textit{fast}, \textit{slow}\}$ only if at least a majority of honest processes classify it as $x$.
 \end{itemize}
+
+[BYZANTINES CANNOT EQUIVOCATE THE NETWORK BETWEEN TWO VALUES FAST OR SLOW, EQUIVOCATION CAN ONLY BE BETWEEN A SINGLE VALUE (FAST OR SLOW) AND $\bot$. THIS IS IMPLICIT IN P6, BUT SHOULD WE MAKE AN EXPLICIT PROPERTY ABOUT THIS?]
 
 \paragraph{Argument for P.1.}
 The proposed mechanism does not modify the underlying consensus algorithm.
