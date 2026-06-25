@@ -1,0 +1,33 @@
+using aws-latencies
+
+	Nodes:
+node0	London
+node1	Sydney
+node2	N California
+node3	Mumbai
+Node4	N Virginia
+Node5	Ireland
+Node6	Tokyo
+Node7	Canada
+Node8	Frankfurt
+Node9	S_Paulo
+Node10	Seoul
+Node11	Oregon
+Node12	Singapore
+
+
+	Leaders sequence:
+10,5,7,2,0,6,1,12,8,3,9,4,11
+Seoul
+Ireland
+Canada
+N California
+London
+Tokyo
+Sydney
+Singapore
+Frankfurt
+Mumbai
+S_Paulo
+N Virginia
+Oregon
