@@ -22,8 +22,8 @@ Cryptographic techniques are used, with adversaries not having (with high probab
 \subsection{Blockchain Consensus}
 \label{tenderback}
 
-We consider permissioned consensus protocols, such as PBFT~\cite{castro1999practical} and Tendermint~\cite{buchman2016tendermint}.
-Tendermint consensus operates through three sequential phases, \emph{propose}, \emph{prevote}, and \emph{precommit}, which functionally correspond to the \emph{pre-prepare}, \emph{prepare}, and \emph{commit} stages of the Practical Byzantine Fault Tolerance (PBFT) algorithm. 
+We consider permissioned consensus protocols, such as Practical Byzantine Fault Tolerance (PBFT)~\cite{castro1999practical} and Tendermint~\cite{buchman2016tendermint}.
+Tendermint consensus operates through three sequential phases, \emph{propose}, \emph{prevote}, and \emph{precommit}, which functionally correspond to the \emph{pre-prepare}, \emph{prepare}, and \emph{commit} stages of the PBFT algorithm. 
 A primary distinction of Tendermint is the implementation of a rotating proposer mechanism: by using a round-robin approach in which each node proposes only once, the network mitigates censorship \cite{wahrstatter2024blockchain}. % and ensures that an honest proposer eventually assumes leadership. 
 
 Furthermore, unlike PBFT, Tendermint is designed for environments where unknown participants can join. To protect against Sybil attacks\cite{douceur2002sybil}, where a malicious actor might otherwise flood the network with nodes to gain control, the protocol integrates a Proof of Stake (PoS) mechanism. %This economic barrier shifts this is the last candidate.  next esc will revert to uncompleted text. he security assumption from a count of nodes to a distribution of wealth: the system remains secure as long as less than one-third of the total staked tokens are held by Byzantine actors. 

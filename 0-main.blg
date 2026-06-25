@@ -1,0 +1,88 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: 0-main.aux
+The style file: splncs04.bst
+Database file #1: references.bib
+Repeated entry---line 218 of file references.bib
+ : @inproceedings{yu2024adaptive
+ :                              ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 227 of file references.bib
+ : @article{qiao2024enhancing
+ :                           ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 237 of file references.bib
+ : @inproceedings{du2020performance
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 246 of file references.bib
+ : @inproceedings{shan2025grouped
+ :                               ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 256 of file references.bib
+ : @article{zhu2025rgpbft
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 267 of file references.bib
+ : @inproceedings{huang2023improved
+ :                                 ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 275 of file references.bib
+ : @article{wen2025mapbft
+ :                       ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 286 of file references.bib
+ : @inproceedings{zhao2022pbft
+ :                            ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 303 of file references.bib
+ : @inproceedings{castro1999practical
+ :                                   ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 313 of file references.bib
+ : @phdthesis{buchman2016tendermint
+ :                                 ,
+I'm skipping whatever remains of this entry
+Warning--can't use both volume and number fields in castro1999practical
+You've used 15 entries,
+            2850 wiz_defined-function locations,
+            693 strings with 7733 characters,
+and the built_in function-call counts, 10192 in all, are:
+= -- 927
+> -- 275
+< -- 19
++ -- 115
+- -- 98
+* -- 622
+:= -- 1250
+add.period$ -- 33
+call.type$ -- 15
+change.case$ -- 111
+chr.to.int$ -- 0
+cite$ -- 16
+duplicate$ -- 861
+empty$ -- 909
+format.name$ -- 110
+if$ -- 2304
+int.to.chr$ -- 0
+int.to.str$ -- 15
+missing$ -- 158
+newline$ -- 51
+num.names$ -- 30
+pop$ -- 301
+preamble$ -- 1
+purify$ -- 77
+quote$ -- 0
+skip$ -- 331
+stack$ -- 0
+substring$ -- 717
+swap$ -- 496
+text.length$ -- 19
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 60
+warning$ -- 1
+while$ -- 87
+width$ -- 17
+write$ -- 166
+(There were 10 error messages)

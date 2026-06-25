@@ -39,10 +39,6 @@ Kruskal, W.H., Wallis, W.A.: Use of ranks in one-criterion variance analysis.
   (1952). \doi{10.1080/01621459.1952.10483441},
   \url{https://doi.org/10.1080/01621459.1952.10483441}
 
-\bibitem{nakamoto2008bitcoin}
-Nakamoto, S.: Bitcoin whitepaper. URL: https://bitcoin. org/bitcoin. pdf-(:
-  17.07. 2019)  \textbf{9}, ~15 (2008)
-
 \bibitem{qiao2024enhancing}
 Qiao, P.: Enhancing manufacturing-as-a-service supply chain transparency with
   master-slave multi-chain and sqs-pbft. IEEE Access  \textbf{12},
@@ -54,11 +50,6 @@ Shan, B., Gao, T., Song, L., Cui, Y.: Grouped byzantine fault-tolerant
   International Symposium on Computer Applications and Information Technology
   (ISCAIT). pp. 1890--1895. IEEE (2025)
 
-\bibitem{tikhomirov2017ethereum}
-Tikhomirov, S.: Ethereum: state of knowledge and research perspectives. In:
-  International symposium on foundations and practice of security. pp.
-  206--221. Springer (2017)
-
 \bibitem{wahrstatter2024blockchain}
 Wahrst{\"a}tter, A., Ernstberger, J., Yaish, A., Zhou, L., Qin, K., Tsuchiya,
   T., Steinhorst, S., Svetinovic, D., Christin, N., Barczentewicz, M., et~al.:
@@ -69,11 +60,6 @@ Wahrst{\"a}tter, A., Ernstberger, J., Yaish, A., Zhou, L., Qin, K., Tsuchiya,
 Wen, X., Yang, X.: Mapbft: multilevel adaptive pbft algorithm based on
   discourse and reputation models. The Computer Journal  \textbf{68}(6),
   635--648 (2025)
-
-\bibitem{yin2019hotstuff}
-Yin, M., Malkhi, D., Reiter, M.K., Gueta, G.G., Abraham, I.: Hotstuff: Bft
-  consensus with linearity and responsiveness. In: Proceedings of the 2019 ACM
-  symposium on principles of distributed computing. pp. 347--356 (2019)
 
 \bibitem{yu2024adaptive}
 Yu, L., Wu, Y., Lu, J., Li, T.: An adaptive reputation update mechanism for

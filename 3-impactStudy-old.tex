@@ -1,0 +1,143 @@
+\section{Understanding the Impact of Proposer Location}
+\label{sec:impact}
+
+This section investigates how proposer’s network latency relative to other nodes affects overall consensus performance. 
+We discuss how to measure consensus latency under different proposers; report experiments in a geo-distributed setting; 
+show evidence that proposer differentiation is possible; and discuss the influence of different proposers on quorum formation.
+
+We conducted experiments on the CloudLab\footnote{\url{https://cloudlab.us/}} testbed using 13 m510\footnote{\url{https://docs.cloudlab.us/hardware.html\#(part.cloudlab-utah)}} nodes. Each node emulated a distinct AWS zone, with inter-node latencies\footnote{\url{https://github.com/cometbft/cometbft/blob/v2.x/test/e2e/pkg/files/aws-latencies.csv}} injected via the \texttt{tc}\footnote{https://www.man7.org/linux/man-pages/man8/tc.8.html} (traffic control) utility to represent a realistic geo-distributed topology. The study utilized the Malachite implementation of the Tendermint protocol. Each execution lasted five minutes, including a 30-second warm-up and 15-second cool-down, with clock synchronization maintained via NTP to ensure deviations remained below 10ms.
+
+Our primary observation metric for evaluating proposer location is the total time elapsed from the moment the proposer sends the proposal to the final decision at each node.  As this metric relates timestamps at different nodes, NTP is used.    We call this metric {\it global consensus duration}.  
+%
+
+As we also want to propose a mechanism for distributed monitoring each proposer's performance, we would like to avoid
+measures involving the proposer and each node.
+Such measures both depend on synchronized nodes and also are subject to dishonest proposers lying about 
+their timestamps to forge fast latency samples in their favor.
+Thus we introduce a second metric, which is measured locally at each node.   When a node finishes height $h-1$ it locally
+enters the proposal phase of height $h$.   This is the moment the latency sample initiates.   A proposer should then send the 
+proposal while a non-proposer awaits for the proposal.  Afterwards, when decision is reached, the sample finishes.
+We call this metric the {\it local consensus duration}.
+
+\subsubsection{Topology with uniform latencies among node pairs.}
+
+Our experimental methodology followed a sequence of targeted tests. First, a \textit{sanity check} was performed using a 4-node topology with a uniform 100ms latency between any pari of nodes.  We measured the global consensus duration for each possible proposer and node pair.
+The results showed negligible variation ($< 1.6\%$) across samples, indicating that any subsequent performance discrepancies were
+ strictly due to network topology.    Also, we observed no impact in switching proposers at each decision or after a number of decisions.  
+ For better legibility, we show figures with results switching proposers every 10 decisions.
+
+\subsubsection{Proposer Impact on Consensus Duration.}
+
+Figure \ref{Idur}.a depicts total consensus latency in our 13-node geo-distributed topology.  
+It shows that the latency perceived at each node clearly is impacted by the proposer (one proposer per column with different color).
+[???  HERE INSERT NUMERICAL DISCUSSION WITH DATA FROM THE PICTURE.    THIS DISCUSSION SHOLD 
+SUPPORT THAT PROPOSER DIFFERENTIATION IS POSSIBLE ]
+Moreover, it also indicates that proposer differentiation should be possible since, for some proposers, latencies observed are  ...
+
+As previously discussed, the local consensus duration is a measure of practical interest.   Figure \ref{Idur}.b depicts this measure for the same data.
+As can be observed, the local consensus duration measure is strongly related to the global consensus duration...
+[???  HERE INSERT NUMERICAL DISCUSSION WITH DATA FROM THE PICTURE.    THIS DISCUSSION SHOULD SUPPORT
+THAT THE LOCAL MEASURE IS STRONGLY RELATED TO THE GLOBAL AND THAT IT ALLOWS PROPOSER DIFFERENTIATION.  ]
+
+
+\begin{figure}
+     \centering
+     \begin{subfigure}{0.95\textwidth}
+         \centering
+         %\includegraphics[width=\linewidth]{svgi/10xconsensusDurationLeader.svg.png}
+         \includegraphics[width=\linewidth]{svgi/10xoptbackdecidedDeviationBlocktimeLeader.svg.png}
+
+         %\includesvg[width=\linewidth]{svg/10xconsensusDurationLeader.svg}
+         \caption{Each vertical line represents a consensus instance and is composed by global consensus duration samples, 
+                       from the respective proposer to each node.  
+                                Line darkness represents concentration of samples.}
+         \label{fig:1a}
+     \end{subfigure}
+     \\
+     \begin{subfigure}{0.95\textwidth}
+         \centering
+         % Cor nas linhas, ruim de ver de longe
+         %\includesvg[width=\linewidth]{svg/10xoptdecidedDeviationBlocktimeLeader.svg}
+         %\includesvg[width=\linewidth]{svg/10xoptbackdecidedDeviationBlocktimeLeader.svg}
+         \includegraphics[width=\linewidth]{svgi/10xblocktimeDurationsLeader.svg.png}
+         \caption{Each vertical line represents a consensus instance and is composed by local consensus duration samples at each node, under the respective proposer.}
+         \label{fig:1b}
+     \end{subfigure}
+     \caption{(a) Global consensus duration. (b) Local consensus duration.
+     10 instances per proposer, each proposer has a different color, divided by vertical dotted lines. 
+     Solid line indicates a new round through same proposers - repeating the pattern. }
+     \label{Idur}
+\end{figure}
+
+
+[ cdfs da figura 1.a ] 
+
+[ titulo p 4 ] 
+
+[ tail latency nos resultados???   nao esta aparecendo ... ]
+ 
+[ VER SE ISSO FICA ]
+To evaluate the statistical significance of our data, we performed a Kruskal–Wallis test\cite{Kruskal01121952} on both the consensus duration and individual step durations.    [INDIVIDUAL STEP COTINUA NA DISCUSSAO?] [ACHO IMPORTANTE PELO MENOS MENCIONAR QUE O PROPOSER AFETA OS STEPS INDIVIDUAIS, JÁ QUE ISSO IMPACTA TODO O FUNCIONAMENTO]
+Kruskal-Wallis is a non-parametric statistical test used to determine whether samples across groups originate from the same distribution. We use this test to determine whether our groups (different proposers) produce statistically significant differences in the observed data (durations). The test produces a p-value, representing the probability of observing the results under the null hypothesis (i.e. that the different proposers do not affect the data), and an H-statistic, which measures how strongly the observed distributions deviate from the null hypothesis. We also calculated the effect size using $\epsilon^2$ (epsilon squared), representing the relative magnitude of the differences between groups, ranging between 0 and 1, with larger values indicating stronger group effects.
+
+For each metric, we evaluated both quorum metrics (first $2F+1$ nodes terminate consensus or finish a step), and the local view of each individual node for those same metrics.
+
+We grouped executions by proposer (k = 13), with a total of 344 consensus instances (n = 344). All tests yielded statistically significant results (p < 0.001). For tests on the fastest quorum, we observed H > 200 with $\epsilon^2$ > 0.5 for the step durations, and H = 153 with $\epsilon^2$ = 0.43 for the overall consensus duration. These results indicate substantial variability in both consensus and step durations associated with changes in proposer.
+
+When analyzing individual nodes, consensus duration still showed significant association with proposer selection, with H-values ranging from 183.38 to 218.90 and corresponding $\epsilon^2$ values between 0.52 and 0.62. For the prevote step, the H-statistic varied from 97.13 to 307.46, with one outlier at H = 53.74. The corresponding $\epsilon^2$ values ranged from 0.13 to 0.89, with $\epsilon^2$ = 0.26 for the case where H = 97.13. For the precommit step, H-values ranged from 110.71 to 298.32, with $\epsilon^2$ values between 0.30 and 0.86.
+
+These results demonstrate that the proposer has a considerable effect on both consensus duration and step durations across all nodes in the network.
+
+
+
+%\subsubsection{Proposer Impact on Quorum Formation.}
+%After the proposal, further communication steps are all-to-all. While the time to receive a quorum, in all-to-all communication phases, theoretically depends on the location of each receiver node, 
+%%in proposer-based algorithms are theoretically symmetric, 
+%we investigated whether the proposer's location could influence such steps.
+%%We define \textit{prevote} duration as the interval from proposal receipt to quorum collection, and \textit{precommit} duration as the time from prevote quorum to precommit quorum.
+%%
+%Fig.\ref{fig.steps} displays individual prevote (a) and precommit (b) step durations, showing that proposer location measurably also impacts the latency of these consensus phases.   
+%
+%\begin{figure}
+%     \centering
+%     \begin{subfigure}{0.95\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{svgi/10xlimStepPrevoteLeader.svg.png}
+%         \caption{}
+%         \label{fig:2a}
+%     \end{subfigure}
+%     \\
+%     \begin{subfigure}{0.95\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{svgi/10xlimStepPrevotePrecommitLeader.svg.png}
+%         \caption{}
+%         \label{fic:2b}
+%     \end{subfigure}
+%     \caption{(a) For each instance a we measure each nodes latencies from receiving a proposal until a quorum of prevotes is received. We then calculate the per-proposer mean (green) and global mean (red).  \\
+%     (b) The same for each nodes latencies from receiving the proposal until a quorum of precommits is received.}
+%     \label{fig.steps}
+%\end{figure}
+
+
+\subsubsection{Proposer Impact on Quorum Formation.}
+After the proposal, further communication steps are all-to-all. 
+While the time to receive a quorum, in all-to-all communication phases, theoretically depends on the location of each receiver node, 
+we investigated whether the proposer's location could influence such steps.
+%
+%One hypothesis to better understand the previous result is that 
+%a proposer impacts the formation of quorums, which in turn affects step durations.
+%Suppose a proposer $p$ close to a node $n_1$, which is distant from $n_2$.  $n_1$ would quickly respond $p$'s $propose$ message with $prevote$ to all nodes, possibly reaching $n_2$ before other nodes messages to $n_2$, i.e. $n_2$'s prevote quorum includes a distant node $n_1$. 
+To check this, we computed and evaluated the quorums built at each node, rotating the whole set of proposers several rounds.   We observed a 98\% consistency in each node's local quorum composition when the same node acted as proposer. Nodes geographically closer to the proposer receive the proposal faster and, consequently, their votes are the first to arrive and form the $prevote$ quorum.
+
+[MOSTRAR A FIG 'IMG/NODE4 QUORUMS.PNG'?]
+%
+As stated in the Tendermint specification, if a farther node manages to join another node’s prevote quorum, that second node will wait for that node in the $precommit$ step even if a faster quorum is reached (this is intended for Proof of Stake rewards).   This means that in the precommit phase, a specific node cannot progress with it's ideal quorum (set of closest nodes), negatively impacting latency and throughput.   This also leads to the high consistency among prevote and precommit quorums in a specific node.
+
+%\subsubsection{Throughput Gains via Proposer Placement}
+%The final aspect of our analysis compared the standard round-robin rotation against a fixed-proposer configuration using topologically "ideal" nodes. The results confirm that by steering the protocol to favor leaders with lower median latency to the rest of the network, the system achieves significantly higher sustained throughput.
+
+% [??? bla bla ... tem que colocar numeros aqui !!!!  e fazer o texto mais sucinto ]
+
+%This gain is achieved without modifying the underlying BFT safety logic, proving that performance-aware leader selection is a viable optimization for geo-distributed blockchains.
+
+
