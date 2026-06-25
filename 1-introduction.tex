@@ -1,19 +1,41 @@
-%
+%!TEX root =  0-main.tex
 \section{Introduction}
 
-%State Machine Replication has seen widespread adoption in recent years, particularly due to its use in blockchain systems. 
-Early blockchain platforms such as Bitcoin\cite{nakamoto2008bitcoin} and Ethereum\cite{tikhomirov2017ethereum} demonstrated fully functional permissionless distributed consensus systems, prioritizing security and correctness at the expense of performance. As modern systems experience increasing workloads, this creates a need for higher throughput and lower per-transaction latency. In response, modern research has largely shifted towards improving performance, sometimes even assuming lower security thresholds for the sake of performance\cite{eischer2018latency}. 
+Modern Byzantine fault-tolerant (BFT) consensus protocols increasingly target geo-distributed deployments, where validators are spread across multiple regions and datacenters. 
+In such environments, wide-area network latency becomes a dominant component of consensus execution time, making network topology a critical determinant of performance. 
 
-Consensus algorithms are a central piece in blockchains.
-Several modern such algorithms employ rotating leaders or proposers, aiming to mitigate the performance impact of byzantine processes; avoid censorship; and provide fair reward distribution.    
-While a leader coordinates the different consensus phases of a consensus instance (e.g. as in \cite{yin2019hotstuff}), a proposer is only in charge of proposing a value for an instance and the further phases are distributed (e.g. as in \cite{buchman2016tendermint}).   In this paper we explore proposer selection as a possible avenue for performance improvement. Although not addressed in this paper, it is expected that leader-based algorithms would be even more affected by the topology than proposer-based ones. 
+In BFT protocols that employ \emph{rotating proposers} (e.g.,~\cite{eischer2018latency}), wide-area network latency plays a particular role.
+In such protocols, in each consensus instance, the proposer, a designated validator, is responsible for injecting the next value (e.g., a block of transactions) into the consensus protocol by disseminating it to the remaining validators. 
+Rotating proposers improves fairness, reduces opportunities for censorship, and distributes rewards among validators~\cite{buchman2016tendermint}. 
+Therefore, it is unsurprising that proposer selection has received significant attention as a means of improving performance.
+Comparatively little is understood, however, about how the proposer's position within the network topology affects the execution of consensus itself.
 
-{\it A first contribution} of this paper is the set of experiments to understand the impact of the proposer's position within the topology on the performance of geo-distributed consensus.
-Our experiments in Section \ref{sec:impact} show that the position of a proposer is a significant factor throughout the entirety of consensus. In some topologies we observe overheads of up to 40\% in overall consensus latency, attributed only to the position of a proposer. We also show that the position of a proposer impacts quorum formation, and therefore the duration of individual consensus steps.    
+Understanding this relationship is important not only for characterizing the behavior of modern BFT protocols, but also for determining whether topology-aware proposer selection can improve performance without sacrificing Byzantine resilience. 
+Our experimental study of geo-distributed Tendermint deployments reveals that proposer location is a first-order determinant of consensus performance. 
+Depending solely on the selected proposer, overall consensus latency can vary by up to 40\%. 
+Moreover, the impact of proposer location does not end once the proposal has been disseminated. 
+Because nodes closer to the proposer receive the proposal earlier, they are more likely to form the first quorums, which, in turn, influence the execution of subsequent consensus phases. 
+These observations naturally suggest that proposer selection should account for network topology. 
 
-{\it The second contribution} of this paper is, based on the above observations,  the proposition of  a generic proposer selection optimization mechanism. In Section \ref{sec:algorithm} we define this mechanism, argue for its applicability in Byzantine environments, and evaluate it through practical experiments. Our experiments in Section \ref{sec:experiments} compare a Tendermint implementation with and without our mechanism, showing throughput improvements of up to 15\% in some topologies with no impact to Byzantine tolerance.
+Motivated by this insight, we propose a generic, performance-aware proposer-prioritization mechanism for rotating-leader consensus protocols. 
+Rather than removing validators from the committee or modifying the underlying consensus algorithm, our mechanism continuously adjusts proposer frequency based on the observed durations of previous consensus instances. 
+The mechanism is decentralized, introduces no additional communication rounds, preserves the Byzantine fault threshold, and can be integrated with existing rotating-leader protocols with minimal modifications. 
 
-The paper follows in Section \ref{sec:background} with the system model, a discussion of Tendermint and related work.  It then continues with Sections
-\ref{sec:impact}, \ref{sec:algorithm} and \ref{sec:experiments} as discussed above, followed then by Conclusions.
+The main contributions of this paper are as follows: 
+\begin{itemize}
+\item We present a taxonomy of performance-aware leader selection strategies for Byzantine fault-tolerant consensus. 
+We classify existing approaches by their design choices, highlight common trade-offs among performance, resilience, protocol integration, and fairness, and position our work within this design space. 
+\item We provide the first experimental characterization of the impact of proposer location on performance in geo-distributed Byzantine consensus. 
+Our evaluation shows that the choice of the proposer significantly influences consensus latency, quorum formation, and the duration of individual protocol phases, revealing performance differences of up to 40\% that arise solely from network topology. 
+\item We propose a generic, Byzantine-resilient methodology for performance-aware proposer prioritization. 
+The proposed mechanism continuously adapts proposer frequency based on observed consensus performance, without introducing additional communication rounds or reducing the Byzantine fault threshold. We also argue for the correctness of the proposed approach. 
+\end{itemize} 
+
+The remainder of this paper is organized as follows. 
+Section~\ref{sec:background} introduces the system model and provides the necessary background on Tendermint.
+Section~\ref{sec:taxonomy} reviews related work and proposes a taxonomy of leader selection strategies. 
+Section~\ref{sec:impact} experimentally characterizes the impact of proposer location on consensus execution. 
+Section~\ref{sec:algorithm} presents the proposed proposer prioritization mechanism and discusses its correctness.
+Section~\ref{sec:conclusion} concludes the paper and outlines directions for future work.
 
 

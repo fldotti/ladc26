@@ -29,7 +29,9 @@ A primary distinction of Tendermint is the implementation of a rotating proposer
 Furthermore, unlike PBFT, Tendermint is designed for environments where unknown participants can join. To protect against Sybil attacks\cite{douceur2002sybil}, where a malicious actor might otherwise flood the network with nodes to gain control, the protocol integrates a Proof of Stake (PoS) mechanism. %This economic barrier shifts this is the last candidate.  next esc will revert to uncompleted text. he security assumption from a count of nodes to a distribution of wealth: the system remains secure as long as less than one-third of the total staked tokens are held by Byzantine actors. 
 Participants receive rewards for consensus participation, while detected malicious behavior results in the destruction or reduction of their stake via slashing. This design effectively increases the cost of subversion, making it expensive for an adversary to acquire a quorum.
 
-\section{Related Work}
+\section{Taxonomy of leader selection strategies}
+\label{sec:taxonomy}
+%\section{Related Work}
 
 Several works have explored performance-aware leader selection in Byzantine fault-tolerant consensus.
 Existing proposals differ substantially in both their objectives and integration strategies. 
@@ -181,7 +183,7 @@ P\\
 \hline
 
 \end{tabular}
-\caption{Comparison of leader selection strategies}
+\caption{Taxonomy of leader selection strategies.}
 \begin{tablenotes}
 \small
 \item Legend: Continuous (C) scores allow fine-grained proposer differentiation, while Discrete (D) scores classify nodes into categories. Committee Eviction indicates whether nodes may be removed from the active consensus committee. Proportional (P) rotation biases proposer frequency according to performance, whereas No rotation (N) maintains the primary/proposer until a view change is proposed.
@@ -195,7 +197,7 @@ The surveyed literature also differs in how it treats proposer fairness.
 Many PBFT-derived optimizations effectively converge toward fixed or weakly rotating leaders, increasing susceptibility to censorship and centralization. 
 %Yu et al. \cite{yu2024adaptive} partially address this issue by enforcing equal rotation among nodes above a performance threshold. 
 Our approach instead adopts proportional prioritization: higher-performing nodes are selected more frequently, while all nodes remain eligible proposers. This preserves continuous rotation while still exploiting topology-aware performance asymmetries.
-[OUR APPROACH CAN, DEPENDING ON THE CONFIGURED VALUES (E.G. ALLOWING SCORE TO BE UP TO +-100\% OF STAKE), REMOVE NODES FROM ROTATION (BUT KEEP THEM IN THE COMMITTEE). THIS IS INTENTIONAL AND ALLOWS FOR MAXIMUM THROUGHPUT AT THE COST OF CENSORSHIP RESILIENCE]
+%[OUR APPROACH CAN, DEPENDING ON THE CONFIGURED VALUES (E.G. ALLOWING SCORE TO BE UP TO +-100\% OF STAKE), REMOVE NODES FROM ROTATION (BUT KEEP THEM IN THE COMMITTEE). THIS IS INTENTIONAL AND ALLOWS FOR MAXIMUM THROUGHPUT AT THE COST OF CENSORSHIP RESILIENCE]
 
 Finally, existing work generally treats proposer performance as an abstract property associated with computational speed or node responsiveness, with limited investigation into how network topology shapes consensus execution. 
 Our experiments show that proposer placement directly affects overall consensus latency, influencing the duration of subsequent protocol phases. 

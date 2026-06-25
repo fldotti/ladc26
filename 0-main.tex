@@ -41,16 +41,17 @@
 %
 \title{
 %Performance-Aware Byzantine-Resilient Leader Prioritization for Geo-Distributed Blockchains
-Performance-Aware Leader Selection in Geo-Distributed BFT Consensus
+%Performance-Aware Leader Selection in Geo-Distributed BFT Consensus
+Understanding the Impact of Proposer Location in Geo-Distributed BFT Consensus
 }
 %
 %\titlerunning{Abbreviated paper title}
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
-\author{Lucca Cézar\inst{1}\orcidID{0000-1111-2222-3333} \and
-Fernando Dotti\inst{1}\orcidID{1111-2222-3333-4444} \and
-Fernando Pedone\inst{2}\orcidID{2222--3333-4444-5555}}
+\author{Lucca Cézar\inst{1} \and
+Fernando Dotti\inst{1} \and
+Fernando Pedone\inst{2}}
 %
 \authorrunning{Lucca Cézar et al.}
 % First names are abbreviated in the running head.
@@ -66,14 +67,13 @@ Università della Svitzzera italiana, Lugano, Switzerland  \\
 %
 \begin{abstract}
 
-Blockchain consensus protocols have increasingly focused on performance improvements, including approaches such as better leader selection. However, the specifics of how a leader impacts consensus latency remains poorly characterized.
-%
-We conduct an experimental study with geo-distributed %with emulated AWS 
-topologies and show that the choice of leader can significantly impact consensus, affecting step durations, quorum formation, and increasing consensus time by up to 40\%. Based on these findings we propose a simple, generic mechanism that uses distributed observations to steer leader selection toward higher-performing leaders. 
-%
-Our approach is robust to Byzantine behavior, incurs no worst-case performance overhead, and %improves throughput when [short-term ??????] leader performance is consistent. It 
-achieves throughput gains of up to 80\% compared to node-removal baselines, without reducing Byzantine tolerance. While evaluated on a specific BFT protocol, the method generalizes to rotating-leader SMR systems.
-
+Geo-distributed Byzantine fault-tolerant (BFT) consensus protocols rely on rotating proposers to ensure fairness and distribute responsibilities among validators. 
+This paper presents an experimental study of proposer location in geo-distributed Tendermint deployments. 
+Depending solely on the selected proposer, consensus latency can vary by up to 40\%. 
+Motivated by these findings, we introduce a generic, Byzantine-resilient methodology for performance-aware proposer prioritization. 
+The proposed mechanism continuously adapts the proposer frequency based on observed consensus performance without introducing additional communication rounds, reducing the Byzantine fault threshold, or requiring modifications to the underlying consensus protocol. 
+We also present a taxonomy of existing performance-aware leader-selection strategies and position our approach within this design space. 
+Although instantiated for Tendermint, the proposed methodology is applicable to a broader class of rotating-leader state machine replication protocols.
 
 \keywords{Byzantine consensus \and Blockchains \and Leader selection.}
 \end{abstract}

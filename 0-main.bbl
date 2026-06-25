@@ -1,0 +1,100 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{buchman2016tendermint}
+Buchman, E.: Tendermint: Byzantine fault tolerance in the age of blockchains.
+  Master's thesis, University of Guelph (2016)
+
+\bibitem{castro1999practical}
+Castro, M., Liskov, B., et~al.: Practical byzantine fault tolerance. In: OsDI.
+  vol.~99, pp. 173--186 (1999)
+
+\bibitem{douceur2002sybil}
+Douceur, J.R.: The sybil attack. In: International workshop on peer-to-peer
+  systems. pp. 251--260. Springer (2002)
+
+\bibitem{du2020performance}
+Du, N., Liang, Z., Huang, Y., Guo, Z., Yang, H., Wang, S.: Performance
+  optimisation method of pbft consensus for supply chain integration svm. In:
+  2020 7th international conference on dependable systems and their
+  applications (DSA). pp. 371--377. IEEE (2020)
+
+\bibitem{eischer2018latency}
+Eischer, M., Distler, T.: Latency-aware leader selection for geo-replicated
+  byzantine fault-tolerant systems. In: 2018 48th Annual IEEE/IFIP
+  International Conference on Dependable Systems and Networks Workshops
+  (DSN-W). pp. 140--145. IEEE (2018)
+
+\bibitem{huang2023improved}
+Huang, D., Huang, Y., Yang, Y.: Improved pbft consensus algorithm based on node
+  evaluation and dynamic management. In: Proceedings of the 2023 4th
+  International Conference on Big Data Economy and Information Management. pp.
+  851--855 (2023)
+
+\bibitem{Kruskal01121952}
+Kruskal, W.H., Wallis, W.A.: Use of ranks in one-criterion variance analysis.
+  Journal of the American Statistical Association  \textbf{47}(260),  583--621
+  (1952). \doi{10.1080/01621459.1952.10483441},
+  \url{https://doi.org/10.1080/01621459.1952.10483441}
+
+\bibitem{nakamoto2008bitcoin}
+Nakamoto, S.: Bitcoin whitepaper. URL: https://bitcoin. org/bitcoin. pdf-(:
+  17.07. 2019)  \textbf{9}, ~15 (2008)
+
+\bibitem{qiao2024enhancing}
+Qiao, P.: Enhancing manufacturing-as-a-service supply chain transparency with
+  master-slave multi-chain and sqs-pbft. IEEE Access  \textbf{12},
+  186605--186616 (2024)
+
+\bibitem{shan2025grouped}
+Shan, B., Gao, T., Song, L., Cui, Y.: Grouped byzantine fault-tolerant
+  consensus mechanism based on node behaviour analysis. In: 2025 4th
+  International Symposium on Computer Applications and Information Technology
+  (ISCAIT). pp. 1890--1895. IEEE (2025)
+
+\bibitem{tikhomirov2017ethereum}
+Tikhomirov, S.: Ethereum: state of knowledge and research perspectives. In:
+  International symposium on foundations and practice of security. pp.
+  206--221. Springer (2017)
+
+\bibitem{wahrstatter2024blockchain}
+Wahrst{\"a}tter, A., Ernstberger, J., Yaish, A., Zhou, L., Qin, K., Tsuchiya,
+  T., Steinhorst, S., Svetinovic, D., Christin, N., Barczentewicz, M., et~al.:
+  Blockchain censorship. In: Proceedings of the ACM Web Conference 2024. pp.
+  1632--1643 (2024)
+
+\bibitem{wen2025mapbft}
+Wen, X., Yang, X.: Mapbft: multilevel adaptive pbft algorithm based on
+  discourse and reputation models. The Computer Journal  \textbf{68}(6),
+  635--648 (2025)
+
+\bibitem{yin2019hotstuff}
+Yin, M., Malkhi, D., Reiter, M.K., Gueta, G.G., Abraham, I.: Hotstuff: Bft
+  consensus with linearity and responsiveness. In: Proceedings of the 2019 ACM
+  symposium on principles of distributed computing. pp. 347--356 (2019)
+
+\bibitem{yu2024adaptive}
+Yu, L., Wu, Y., Lu, J., Li, T.: An adaptive reputation update mechanism for
+  primary nodes in pbft. In: 2024 IEEE 23rd International Conference on Trust,
+  Security and Privacy in Computing and Communications (TrustCom). pp.
+  1948--1953. IEEE (2024)
+
+\bibitem{zhang2024prestigebft}
+Zhang, G., Pan, F., Tijanic, S., Jacobsen, H.A.: Prestigebft: Revolutionizing
+  view changes in bft consensus algorithms with reputation mechanisms. In: 2024
+  IEEE 40th International Conference on Data Engineering (ICDE). pp.
+  1930--1943. IEEE (2024)
+
+\bibitem{zhao2022pbft}
+Zhao, F., Wang, Y.: Pbft consensus algorithm based on reward and punishment
+  mechanism. In: 2022 3rd International Conference on Information Science and
+  Education (ICISE-IE). pp. 168--173. IEEE (2022)
+
+\bibitem{zhu2025rgpbft}
+Zhu, X., Hu, X., Zhu, W.: Rgpbft: A reputation-based pbft algorithm with node
+  grouping strategy. Arabian Journal for Science and Engineering
+  \textbf{50}(15),  11837--11850 (2025)
+
+\end{thebibliography}
