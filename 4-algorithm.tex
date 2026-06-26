@@ -13,7 +13,9 @@ proposed mechanism (Section~\ref{subsec:correctness}).
 \label{subsec:samplig}
 
 Each node continuously monitors the latency of consensus instances in order to estimate the relative performance of proposers. 
-For each consensus height, each node locally measures the elapsed time from the start of the consensus instance (e.g., Tendermint's \texttt{propose}) to the final decision.
+This is carried out using the procedure explained in Section \ref{sec:impact}, Algorithm \ref{alg:measurements}.
+For each consensus height, each node locally measures the elapsed time from the start of the consensus instance 
+to the final decision.
 
 Since each consensus instance is associated with a known proposer, the observed latency provides an estimate of that proposer's effectiveness at driving consensus progress.
 
@@ -78,7 +80,7 @@ As a consequence, all honest nodes eventually converge to the same proposer clas
 To understand the need for $2f+1$ matching 
 %non-$\bot$ 
 classifications, let $k$ be the number of votes the proposer receives, where
-$k = k_{fast} + k_{slow}$% + k_\bot$.
+$k = k_{fast} + k_{slow}$. % + k_\bot$.
 At most $f$ of these votes are from Byzantine processes, and there are votes from $(N-k)$ nodes that the proposer does not know about.
 Therefore, to guarantee that there are votes from a majority of honest nodes for \textit{fast} (resp., \textit{slow}), it must be that 
 $k_{fast} - f > k_{slow} + k_\bot + (N - k_{fast} - k_{slow}
@@ -121,7 +123,7 @@ Since $score_n \in [-1,1]$ and $C < 1$, every node always retains a strictly pos
 The deterministic \texttt{nextProposer} function of the underlying consensus algorithm is then executed using $weight_n$ instead of the original $stake_n$.
 As a result, proposer selection continuously adapts to observed consensus performance while preserving the original proposer rotation mechanism.
 
-Finally, since the system is decentralized, parameters $\alpha$, $\beta$, and $C$ must remain consistent across nodes. 
+Finally, since the system is decentralized, parameters $\alpha$ and $C$ must remain consistent across nodes. 
 In systems that support dynamic reconfiguration, these parameters may themselves be updated via consensus and recorded in the replicated state.
 
 
