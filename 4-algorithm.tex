@@ -1,5 +1,4 @@
 %!TEX root =  0-main.tex
-\clearpage
 \section{Performance-Aware Proposer Prioritization}
 \label{sec:algorithm}
 
@@ -49,23 +48,24 @@ Rather than introducing a separate consensus protocol, our approach piggybacks c
 The mechanism operates continuously through two lightweight steps: \textit{vote}, \textit{propose}, and \textit{adopt}.
 
 \paragraph{Vote step.}
-Once the node reaches a decision on height $h$ that nodes calculates the consensus duration and compares it to the average to obtain its local $c_h$ vote for that height. This value is only calculated once and a honest node will never change a previous vote for any reason. The node then sends its local $c_h$ along with the first consensus message (e.g. tendermint's \texttt{prevote}) for the height $h+1$, thereby avoiding additional communication rounds. 
-
-This vote contains the height which it refers to, its vote, and a criptographic signature for the vote. 
-[MENTION THAT HAVING A SIGNATURE JUST FOR THE VOTE SIMPLIFIES DECISION PROPOSAL? E.G. PROPOSER CAN JUST SEND VOTE,HEIGHT AND SIGNATURES FOR THAT PAIR TO PROVE IT]
-
-%\fp{THERE'S SOMETHING WRONG HERE, WITH THE HEIGHTS. HOW IS THIS REALLY DONE? WHEN IS TIME TAKEN, ...}
+Once the node reaches a decision on height $h$, the node calculates the consensus duration and compares it to the average to obtain its local $c_h$ vote for that height. 
+This value is only calculated once, and an honest node will never change a previous vote for any reason. 
+The node then sends its local $c_h$ along with the first consensus message (e.g., Tendermint's \texttt{prevote}) for the height $h+1$, thereby avoiding additional communication rounds. 
+This vote includes the height it refers to, its vote, and a cryptographic signature. 
 
 \paragraph{Choose step.}
 At the beginning of height $h+2$, the proposer evaluates the classifications received for the proposer of height $h$, reaching one of three states
 \begin{enumerate}
 \item The proposer receives enough votes for a decision $d_h \in \{fast, slow\}$; It then proses $d_h$.
-\item The proposer receives at least $F+1$ votes for $fast$ and at least $F+1$ votes for slow, making a decision impossible; It then proposes $\bot$ (non-decision).
-\item The proposer does not receive enough votes to reach a decision; Consensus proceeds as normal but without any decision attached. 
+\item The proposer receives at least $F+1$ votes for $fast$ and at least $F+1$ votes for slow, making a decision impossible. In this case, the proposer proposes $\bot$ (non-decision).
+\item The proposer does not receive enough votes to reach a decision. Consensus proceeds as normal, but without any decision attached. 
 \end{enumerate}
-In cases 1 and 2 the proposer must send valid signatures to validate its proposal. The lack of signatures, or invalid signatures, is a Byzantine behavior which invalidates the block and must be detected by existing Byzantine detection mechanisms. 
+In cases 1 and 2, the proposer must send valid signatures to validate its proposal. 
+The lack of or invalid signatures renders the block invalid. 
 
-Should this decision fail (case 3), any future proposer can then re-propose a past $d_h$ value for any height $h$ with no decision. [MENTION THAT IN PRACTICE THIS SHOULD BE LIMITED TO CURHEIGHT-N?] If nodes reach different decisions (e.g. due to Byzantine equivocation), the value that is proposed and accepted first is accepted. 
+%Should this decision fail (case 3), any future proposer can then re-propose a past $d_h$ value for any height $h$ with no decision. 
+%[MENTION THAT IN PRACTICE THIS SHOULD BE LIMITED TO CURHEIGHT-N?]
+%If nodes reach different decisions (e.g., due to Byzantine equivocation), the value that is proposed and accepted first is accepted. 
 %Like in Tendermint, the proposer waits longer to possibly include classifications received from all honest nodes.
 %If among all votes received there are at least $2f+1$ matching non-$\bot$ classifications, the proposer chooses the corresponding classification.
 %Otherwise, it chooses the neutral classification $\bot$.
@@ -75,8 +75,6 @@ Should this decision fail (case 3), any future proposer can then re-propose a pa
 After a consensus with a valid $d_h \in \{fast, slow\}$ is committed, each node updates its local score accordingly, changing its internal values for the proposer selection algorithm. 
 As a consequence, all honest nodes eventually converge to the same proposer classification history.
 
-[DO WE STILL NEED TO EXPLAIN THIS NOW THAT WE ARE GOING WITH A BINARY DECISION?]
-\vspace{2mm}
 To understand the need for $2f+1$ matching 
 %non-$\bot$ 
 classifications, let $k$ be the number of votes the proposer receives, where
@@ -100,14 +98,15 @@ Each node $n$ maintains a continuous score $score_n \in [-1,1]$ representing the
 Scores are continuously updated according to the classifications produced by the mechanism described in the previous section.
 We define $decision_n \in \{-1,1\}$, where: $slow = -1$ and $fast = 1$. $\bot$ decisions do not require score updates. 
 
-[DECISIONS ARE AFFECTED BY THE AVERAGE AND AVERAGE IS AFFECTED BY THE SCORE. $\bot$ IMPLIES THE PROPOSER'S SCORE IS LIKELY GOOD GIVEN THE CURRENT AVERAGE, AND THEREFORE DOESN'T REQUIRE CHANGE. SHOULD WE ARGUE THIS OR JUST MENTION THAT WE DON'T UPDATE ON $\bot$?]
+%[DECISIONS ARE AFFECTED BY THE AVERAGE AND AVERAGE IS AFFECTED BY THE SCORE. $\bot$ IMPLIES THE PROPOSER'S SCORE IS LIKELY GOOD GIVEN THE CURRENT AVERAGE, AND THEREFORE DOESN'T REQUIRE CHANGE. SHOULD WE ARGUE THIS OR JUST MENTION THAT WE DON'T UPDATE ON $\bot$?]
 
 Scores evolve according to the following exponential averaging recurrence:
 \[
-score'_n = trunc_{[-1,1]}(\alpha \cdot decision_n + ((1-\alpha)+\beta) \cdot score_n)
+score'_n = trunc_{[-1,1]}(\alpha \cdot decision_n + (1-\alpha) \cdot score_n)
 \]
-where parameter $\alpha$, $0 \leq \alpha \leq 1$, controls how strongly new observations influence the score. $\beta$ is a bias value, which adds additional value to new observations, enabling faster convergence. 
+where parameter $\alpha$, $0 \leq \alpha \leq 1$, controls how strongly new observations influence the score.  
 Larger $\alpha$ values make the score react faster to performance changes, whereas smaller $\alpha$ values make scores less sensitive to transient fluctuations.
+%Parameter $\beta$ is a bias value, which adds additional value to new observations, enabling faster convergence.
 Function $trunc_{[-1,1]}()$ ensures that scores are within interval $[-1,1]$.
 
 The resulting score is then combined with the node's stake to bias proposer selection:
@@ -147,7 +146,7 @@ We define a \textit{good run} as an execution in which every honest proposer rec
 \item[P.6] A proposer is adopted as $x \in \{ \textit{fast}, \textit{slow}\}$ only if at least a majority of honest processes classify it as $x$.
 \end{itemize}
 
-[BYZANTINES CANNOT EQUIVOCATE THE NETWORK BETWEEN TWO VALUES FAST OR SLOW, EQUIVOCATION CAN ONLY BE BETWEEN A SINGLE VALUE (FAST OR SLOW) AND $\bot$. THIS IS IMPLICIT IN P6, BUT SHOULD WE MAKE AN EXPLICIT PROPERTY ABOUT THIS?]
+%[BYZANTINES CANNOT EQUIVOCATE THE NETWORK BETWEEN TWO VALUES FAST OR SLOW, EQUIVOCATION CAN ONLY BE BETWEEN A SINGLE VALUE (FAST OR SLOW) AND $\bot$. THIS IS IMPLICIT IN P6, BUT SHOULD WE MAKE AN EXPLICIT PROPERTY ABOUT THIS?]
 
 \paragraph{Argument for P.1.}
 The proposed mechanism does not modify the underlying consensus algorithm.

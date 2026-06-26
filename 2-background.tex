@@ -53,6 +53,21 @@ These approaches remove nodes considered slow, unstable, or suspicious from the 
 While effective at increasing throughput in controlled environments, committee reduction introduces a direct trade-off between performance and Byzantine resilience. Removing slow but correct nodes reduces the effective committee size, thereby lowering the maximum number of Byzantine faults the system can tolerate. 
 Moreover, modern blockchain deployments already incorporate mechanisms to detect and exclude malicious validators, making additional performance-oriented eviction layers potentially redundant and operationally risky.
 
+
+The surveyed literature also differs in how it treats proposer fairness. 
+Many PBFT-derived optimizations effectively converge toward fixed or weakly rotating leaders, increasing susceptibility to censorship and centralization. 
+%Yu et al. \cite{yu2024adaptive} partially address this issue by enforcing equal rotation among nodes above a performance threshold. 
+Our approach instead adopts proportional prioritization: higher-performing nodes are selected more frequently, while all nodes remain eligible proposers. This preserves continuous rotation while still exploiting topology-aware performance asymmetries.
+%[OUR APPROACH CAN, DEPENDING ON THE CONFIGURED VALUES (E.G. ALLOWING SCORE TO BE UP TO +-100\% OF STAKE), REMOVE NODES FROM ROTATION (BUT KEEP THEM IN THE COMMITTEE). THIS IS INTENTIONAL AND ALLOWS FOR MAXIMUM THROUGHPUT AT THE COST OF CENSORSHIP RESILIENCE]
+
+Finally, existing work generally treats proposer performance as an abstract property associated with computational speed or node responsiveness, with limited investigation into how network topology shapes consensus execution. 
+Our experiments show that proposer placement directly affects overall consensus latency, influencing the duration of subsequent protocol phases. 
+In geo-distributed deployments, proposer location therefore becomes a first-order determinant of consensus efficiency rather than merely a secondary implementation detail.
+
+Table~\ref{related} highlights two dominant trends in prior work: (i) performance optimization through committee reduction, and (ii) tightly coupled protocol-specific leader management. 
+Our approach differs in that it preserves the full committee and the original Byzantine threshold while continuously adapting proposer frequency based on observed consensus performance. 
+Unlike eviction-based strategies, proposer prioritization improves throughput without sacrificing resilience or requiring invasive protocol modifications.
+
 %\vspace{-3mm}
 \begin{table}[h!]
 \centering
@@ -129,7 +144,7 @@ Latency measurements combined with reputation signals &
 Y &
 N &
 Y &
-N\tablefootnote{The \cite{wen2025mapbft} primary is the node with the most voting power. If  voting power changes, a new node can become the primary even without suspected failure. However, the algorithm does not perform intentional leader rotation}\\
+N\tablefootnote{The primary is the node with the most voting power \cite{wen2025mapbft}. If voting power changes, a new node can become the primary even without suspected failure. However, the algorithm does not perform intentional leader rotation.}\\
 
 \hline
 \cite{yu2024adaptive} &
@@ -192,21 +207,6 @@ P\\
 
 \end{threeparttable}
 \end{table} 
-
-The surveyed literature also differs in how it treats proposer fairness. 
-Many PBFT-derived optimizations effectively converge toward fixed or weakly rotating leaders, increasing susceptibility to censorship and centralization. 
-%Yu et al. \cite{yu2024adaptive} partially address this issue by enforcing equal rotation among nodes above a performance threshold. 
-Our approach instead adopts proportional prioritization: higher-performing nodes are selected more frequently, while all nodes remain eligible proposers. This preserves continuous rotation while still exploiting topology-aware performance asymmetries.
-%[OUR APPROACH CAN, DEPENDING ON THE CONFIGURED VALUES (E.G. ALLOWING SCORE TO BE UP TO +-100\% OF STAKE), REMOVE NODES FROM ROTATION (BUT KEEP THEM IN THE COMMITTEE). THIS IS INTENTIONAL AND ALLOWS FOR MAXIMUM THROUGHPUT AT THE COST OF CENSORSHIP RESILIENCE]
-
-Finally, existing work generally treats proposer performance as an abstract property associated with computational speed or node responsiveness, with limited investigation into how network topology shapes consensus execution. 
-Our experiments show that proposer placement directly affects overall consensus latency, influencing the duration of subsequent protocol phases. 
-In geo-distributed deployments, proposer location therefore becomes a first-order determinant of consensus efficiency rather than merely a secondary implementation detail.
-
-Table~\ref{related} highlights two dominant trends in prior work: (i) performance optimization through committee reduction, and (ii) tightly coupled protocol-specific leader management. 
-Our approach differs in that it preserves the full committee and the original Byzantine threshold while continuously adapting proposer frequency based on observed consensus performance. 
-Unlike eviction-based strategies, proposer prioritization improves throughput without sacrificing resilience or requiring invasive protocol modifications.
-
 
 %This reliance on PBFT also creates an evaluation gap in the literature. 
 %%Existing comparisons frequently focus on legacy PBFT baselines under heavy Byzantine attacks. Consequently, 

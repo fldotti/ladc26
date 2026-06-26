@@ -1,8 +1,8 @@
 \section{Understanding the Impact of Proposer Location}
 \label{sec:impact}
 
-This section investigates how the geo-distribution of consensus nodes affect the overall performance.
-Following an experimental approach, we configure topologies with chosen node to node communication latencies,
+This section investigates how the geographic distribution of consensus nodes affects overall performance.
+Following an experimental approach, we configure topologies with chosen node-to-node communication latencies,
 submit a workload, and measure consensus latency at each participating node, under every different proposer node.
 
 \subsubsection{Environment.}
@@ -15,18 +15,18 @@ The study utilized the Malachite implementation of the Tendermint protocol. Each
 \subsubsection{Workload.}
 
 Instead of creating a set of clients submitting operations to network nodes, we configured Tendermint nodes to submit a standard proposal value whenever  
-they become proposers for the respective height, according to the protocol.    This represents the minimum latency case, were proposers instantaneously 
+they become proposers for the respective height, according to the protocol. This represents the minimum latency case, where proposers instantaneously 
 submit their proposal to the network whenever they are entitled to.
 
 
 \subsubsection{Metrics.}
 
-Our primary metric for evaluating a proposer's  performance is the latency to decide each height proposed by that proposer, measured at each node.
-As we want these measures to be useful in a monitoring protocol (see Section \ref{sec:algorithm}), 
-we stick to intra-node measurements since this avoids the possibility of dishonest nodes forging fast latency samples in their favor.
-Moreover, no clock-synchronization procedure is needed. A simplification of the algorithm at each node running Tendermint, annotated with sampling procedures, is shown in Algorithm \ref{alg:measurements}.    When a node finishes height $h-1$ it locally
-enters the proposal phase of height $h$.   This is the moment the latency sample initiates.   A proposer should then send the 
-proposal while a non-proposer awaits for the proposal.  Afterwards, when the decision is reached, the sample completes.
+Our primary metric for evaluating a proposer's performance is the latency to decide each height proposed by that proposer, measured at each node.
+As we want these measures to be useful in a monitoring protocol (see Section \ref{sec:algorithm}), we use intra-node measurements, which avoids the possibility of dishonest nodes forging fast latency samples in their favor.
+Moreover, no clock-synchronization procedure is needed. A simplification of the algorithm at each node running Tendermint, annotated with sampling procedures, is shown in Algorithm \ref{alg:measurements}. 
+When a node finishes height $h-1$, it locally enters the proposal phase of height $h$.
+This is the moment when the latency sampling is initiated.
+A proposer should then send the proposal, while a non-proposer waits for the proposal.  Afterward, when the decision is reached, the sample is completed.
 We call this metric the {\it local consensus duration}.
 
 
@@ -37,17 +37,16 @@ We call this metric the {\it local consensus duration}.
 \caption{Simplification of Tendermint at node $n_i$}\label{alg:measurements}
 \begin{algorithmic}[1]
 \State $h \gets 0$
-\Statex
+%\Statex
 \Procedure{Main}{}
     \Loop
         \If{$n_i$ is proposer at $h$}
                \State propose value
         \EndIf
         \State $startTime_h \gets current\_time$       \Comment{Start time for sample $h$}
-        
-          \Statex
-        \State protocol unfolds \Comment{Execution of the consensus/protocol steps}
-        \Statex
+	\State ...        
+        \State protocol unfolds \Comment{Execution of the consensus protocol}
+        \State ...
         
         \Upon{commit}{ of instance $h$}
             \State $sample_h \gets current\_time - startTime_h$     \Comment{End of sample $h$}  
@@ -69,17 +68,17 @@ We call this metric the {\it local consensus duration}.
 
 \subsubsection{Topology with uniform latencies among node pairs.}
 
-We first conducted a \textit{sanity check} using a 4-node topology with a uniform 100ms latency between any pair of nodes.  
-
-We measured the local consensus duration for each possible proposer and node pair.
+We first conducted a sanity check using a 4-node topology with a uniform 100ms latency between any pair of nodes.  
+%
+We measured the local consensus duration for each possible pair of proposer and node.
 The results showed negligible variation ($< 1.6\%$) across samples, indicating that any subsequent performance discrepancies were
- strictly due to network topology.    Also, we observed no impact in switching proposers at each decision or after a number of decisions.  
+ strictly due to network topology. Also, we observed no impact in switching proposers at each decision or after a number of decisions.  
  For better legibility, we show figures with results switching proposers every 10 decisions.
 
 
 \subsubsection{Topology configured for geo-distributed latencies.}
 
-Next, we choose a topology where each node emulated a distinct AWS zone, with 13 zones, and inter-node latencies\footnote{\url{https://github.com/cometbft/cometbft/blob/v2.x/test/e2e/pkg/files/aws-latencies.csv}}.   
+Next, we choose a topology in which each node emulates a distinct AWS zone, with 13 zones, and inter-node latencies.\footnote{\url{https://github.com/cometbft/cometbft/blob/v2.x/test/e2e/pkg/files/aws-latencies.csv}}
 Figure \ref{Idur} depicts the measurements obtained.   
 
 \begin{figure}
@@ -89,19 +88,18 @@ Figure \ref{Idur} depicts the measurements obtained.
                    
               \caption{Local consensus duration under different proposers.   Each proposer has a different color, divided by vertical dotted lines.
                             Each proposer proposes 10 instances in a row, then switches to the next.  
-                            Each vertical blue line represents a consensus instance and is composed by plots of the respective
+                            Each vertical blue line represents a consensus instance and is composed of plots of the respective
                             local consensus duration samples collected at each node.         
-                            Solid lines indicate a new round through same sequence of proposers - repeating the pattern. }
+                            Solid lines indicate a new round through the same sequence of proposers, repeating the pattern. }
      \label{Idur}
 \end{figure}
 
 Figure \ref{Idur} shows, from left to right, 3 rounds over the same 13 proposers, each one with a different color, proposing 10 consensus instances in a row.
-A first observation is that the collected latencies have different levels depending on the proposer.
-Secondly,  latencies repeat for the same proposers in different rounds.  
-Thirdly, the consensus latency shows to be related with the respective proposer's communication latency:   for instance,
-the worst performing node (11th in each round),  corresponds to the node with  (i) the highest average communication latency to all other nodes; 
-(ii) the highest average communication latency considering a quorum (the $2f+1 = 9$ closest nodes, i.e. lower latencies);
-(iii) the highest latency considering the slowest node in a quorum (i.e. the 9th node ordered by latency).
+A first observation is that the collected latencies vary by proposer.
+Secondly, latencies recur for the same proposers across different rounds.  
+Thirdly, the consensus latency is shown to be related to the respective proposer's communication latency: for instance, the worst performing node (i.e., 11th in each round),  corresponds to the node with (i) the highest average communication latency to all other nodes; 
+(ii) the highest average communication latency considering a quorum (i.e., the $2f+1 = 9$ closest nodes, with lower latencies); and
+(iii) the highest latency considering the slowest node in a quorum (i.e., the 9th node ordered by latency).
 
 
 [ SEGUIR ESTA DISCUSSAO COM A RESPOSTA SOBRE DO LUCCA SOBRE O SEGUNDO MAIS LENTO ]
@@ -149,7 +147,7 @@ the worst performing node (11th in each round),  corresponds to the node with  (
 %\end{figure}
 
 
-\subsubsection{Proposer Impact on Quorum Formation.}
+\subsubsection{Proposer impact on quorum formation.}
 After the proposal, further communication phases are all-to-all. 
 While the time to receive a quorum, in all-to-all communication phases, theoretically depends on the location of each receiver node, 
 we investigated whether the proposer's location could influence such steps.
@@ -157,10 +155,12 @@ we investigated whether the proposer's location could influence such steps.
 %One hypothesis to better understand the previous result is that 
 %a proposer impacts the formation of quorums, which in turn affects step durations.
 %Suppose a proposer $p$ close to a node $n_1$, which is distant from $n_2$.  $n_1$ would quickly respond $p$'s $propose$ message with $prevote$ to all nodes, possibly reaching $n_2$ before other nodes messages to $n_2$, i.e. $n_2$'s prevote quorum includes a distant node $n_1$. 
-To check this, we computed and evaluated the quorums built at each node, rotating the whole set of proposers several rounds.   We observed a 98\% consistency in each node's local quorum composition when the same node acted as proposer. Nodes geographically closer to the proposer receive the proposal faster and, consequently, their votes are the first to arrive and form the $prevote$ quorum.
+To check this, we computed and evaluated the quorums formed at each node, rotating the entire set of proposers over several rounds.
+We observed 98\% consistency in each node's local quorum composition when the same node served as proposer. 
+Nodes geographically closer to the proposer receive the proposal faster and, consequently, their votes are the first to arrive and form the $prevote$ quorum.
 
-As stated in the Tendermint specification, if a farther node manages to join another node’s prevote quorum, that second node will wait for that node in the $precommit$ step even if a faster quorum is reached (this is intended for Proof of Stake rewards).   This means that in the precommit phase, a specific node cannot progress with it's ideal quorum (set of closest nodes), negatively impacting latency and throughput.   This also leads to the high consistency among prevote and precommit quorums for a specific node.
+As stated in the Tendermint specification, if a farther node manages to join another node's prevote quorum, that second node will wait for the node in the $precommit$ step, even if a faster quorum is reached (this is intended for Proof of Stake rewards). This means that in the precommit phase, a specific node cannot progress with its ideal quorum (set of closest nodes), negatively impacting latency and throughput. This also leads to the high consistency among prevote and precommit quorums for a specific node.
 
 These results demonstrate that the proposer has a considerable effect on both consensus duration and step durations across all nodes in the network.
-It is expected that in linearized protocols, such as Hotstuff, this impact could be even more important due to the centrality of the proposer (leader).
-Also, the above experiments show that intra-node measurements allow to differentiate the performance of different proposers.
+It is expected that, in linearized protocols such as Hotstuff, this impact could be even more pronounced due to the centrality of the proposer (leader).
+Also, the above experiments show that intra-node measurements allow us to differentiate the performance of different proposers.
