@@ -36,25 +36,32 @@ We call this metric the {\it local consensus duration}.
 \begin{algorithm}
 \caption{Simplification of Tendermint at node $n_i$}\label{alg:measurements}
 \begin{algorithmic}[1]
-\State $h \gets 0$
 %\Statex
-\Procedure{Main}{}
-    \Loop
-        \If{$n_i$ is proposer at $h$}
-               \State propose value
-        \EndIf
-        \State $startTime_h \gets current\_time$       \Comment{Start time for sample $h$}
-	\State ...        
-        \State protocol unfolds \Comment{Execution of the consensus protocol}
-        \State ...
-        
+%\Procedure{Main}{}
+        \Upon{Init}{ }
+            \State $h \gets 0$
+            \State trigger proposal phase for instance $h$
+        \EndUpon
+            
+       \Upon{proposal phase}{ for instance $h$}
+            \State $startTime_h \gets current\_time$       \Comment{Every node locally starts sample $h$}
+            \If{$n_i$ is proposer at $h$}
+                  \State send proposal
+            \EndIf
+        \EndUpon
+        \Upon{receive proposal}{ for instance $h$}
+	     \State ...        
+        \EndUpon
+        \State \ \ \ \              protocol unfolds \Comment{Execution of the consensus protocol}
+        \State \ \ \ \  ...
         \Upon{commit}{ of instance $h$}
             \State $sample_h \gets current\_time - startTime_h$     \Comment{End of sample $h$}  
             \State record $sample_h$ at node's $n_i$ log 
-            \State $h \gets h + 1$
+            \State commit actions for instance $h$
+            \State $h' \gets h + 1$
+            \State trigger proposal phase for instance $h'$
         \EndUpon
-    \EndLoop
-\EndProcedure
+%\EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
