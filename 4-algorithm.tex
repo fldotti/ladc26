@@ -47,7 +47,7 @@ We denote by $c_h \in \{fast, slow\}$ the resulting classification for a consens
 
 We now show how to transform local classifications into a globally consistent classification that can later be used to bias proposer selection.
 Rather than introducing a separate consensus protocol, our approach piggybacks classification information onto the existing consensus execution. 
-The mechanism operates continuously through two lightweight steps: \textit{vote}, \textit{propose}, and \textit{adopt}.
+The mechanism operates continuously through three lightweight steps: \textit{vote}, \textit{propose}, and \textit{adopt}.
 
 \paragraph{Vote step.}
 Once the node reaches a decision on height $h$, the node calculates the consensus duration and compares it to the average to obtain its local $c_h$ vote for that height. 
@@ -58,7 +58,7 @@ This vote includes the height it refers to, its vote, and a cryptographic signat
 \paragraph{Choose step.}
 At the beginning of height $h+2$, the proposer evaluates the classifications received for the proposer of height $h$, reaching one of three states
 \begin{enumerate}
-\item The proposer receives enough votes for a decision $d_h \in \{fast, slow\}$; It then proses $d_h$.
+\item The proposer receives enough votes for a decision $d_h \in \{fast, slow\}$, in which case it proposes $d_h$.
 \item The proposer receives at least $F+1$ votes for $fast$ and at least $F+1$ votes for slow, making a decision impossible. In this case, the proposer proposes $\bot$ (non-decision).
 \item The proposer does not receive enough votes to reach a decision. Consensus proceeds as normal, but without any decision attached. 
 \end{enumerate}
