@@ -77,16 +77,16 @@ The lack of or invalid signatures renders the block invalid.
 After a consensus with a valid $d_h \in \{fast, slow\}$ is committed, each node updates its local score accordingly, changing its internal values for the proposer selection algorithm. 
 As a consequence, all honest nodes eventually converge to the same proposer classification history.
 
-To understand the need for $2f+1$ matching 
+To understand the need for $2F+1$ matching 
 %non-$\bot$ 
 classifications, let $k$ be the number of votes the proposer receives, where
 $k = k_{fast} + k_{slow}$. % + k_\bot$.
-At most $f$ of these votes are from Byzantine processes, and there are votes from $(N-k)$ nodes that the proposer does not know about.
+At most $F$ of these votes are from Byzantine processes, and there are votes from $(N-k)$ nodes that the proposer does not know about.
 Therefore, to guarantee that there are votes from a majority of honest nodes for \textit{fast} (resp., \textit{slow}), it must be that 
-$k_{fast} - f > k_{slow} + k_\bot + (N - k_{fast} - k_{slow}
+$k_{fast} - F > k_{slow} + k_\bot + (N - k_{fast} - k_{slow}
 % - k_\bot
-)$, or $k_{fast} \geq \lceil (N+f)/2 \rceil$, and since $N=3f+1$, 
-$k_{fast} \geq 2f+1$.
+)$, or $k_{fast} \geq \lceil (N+F)/2 \rceil$, and since $N=3F+1$, 
+$k_{fast} \geq 2F+1$.
 
 % NOTE: If we change the condition to require more fast votes than slow votes  (instead of a majority of fast votes, as now), we can lower the limit as follows:
 % $k_{fast} - f > k_{slow} + (n - k_{fast} - k_{slow} - k_\bot)$, although in practice this won't make much of a difference.
@@ -173,42 +173,42 @@ Since the underlying \textit{nextProposer} mechanism rotates among all positive 
 \paragraph{Argument for P.5.}
 Let $Q$ be the honest proposer responsible for choosing the classification of proposer $P$. 
 Without loss of generality, assume that all honest processes classify $P$ as \textit{fast}. 
-Since there are $2f+1$ honest processes and the run is good, $Q$ receives $2f+1$ matching signed classifications for \textit{fast}, independently of any Byzantine votes. 
+Since there are $2F+1$ honest processes and the run is good, $Q$ receives $2F+1$ matching signed classifications for \textit{fast}, independently of any Byzantine votes. 
 Therefore, the condition for choosing a non-$\bot$ classification is satisfied, and $Q$ includes the classification \textit{fast} together with the supporting signed votes in the proposed value.
 Since the proposal is decided by consensus, all honest processes eventually adopt the classification \textit{fast}. The argument for \textit{slow} is symmetric.
 
 \paragraph{Argument for P.6.}
 Assume proposer $P$ is adopted as \textit{fast}. 
-Then, some proposer $Q$ must have proposed a valid classification supported by at least $\lceil (n+f)/2 \rceil$ matching signed classifications for \textit{fast} (Section~\ref{subsec:globalclassification}).
+Then, some proposer $Q$ must have proposed a valid classification supported by at least $\lceil (N+F)/2 \rceil$ matching signed classifications for \textit{fast} (Section~\ref{subsec:globalclassification}).
 
 Let $k_h$ and $k_b$ denote the number of received \textit{fast} classifications originating from honest and Byzantine processes, respectively.
 Thus,
 
 \[
-k_h + k_b \geq \left\lceil \frac{n+f}{2} \right\rceil.
+k_h + k_b \geq \left\lceil \frac{N+F}{2} \right\rceil.
 \]
 
-Since at most $f$ processes are Byzantine, we have $k_b \leq f$. Therefore,
+Since at most $F$ processes are Byzantine, we have $k_b \leq F$. Therefore,
 
 \[
 k_h
 \geq
-\left\lceil \frac{n+f}{2} \right\rceil - f.
+\left\lceil \frac{N+F}{2} \right\rceil - F.
 \]
 
-Using $n = 3f+1$, we obtain
+Using $N = 3F+1$, we obtain
 
 \[
 k_h
 \geq
-\left\lceil \frac{4f+1}{2} \right\rceil - f
+\left\lceil \frac{4F+1}{2} \right\rceil - F
 =
-(2f+1)-f
+(2F+1)-F
 =
-f+1.
+F+1.
 \]
 
-Since there are $2f+1$ honest processes, at least $f+1$ honest classifications constitute a majority of honest processes. 
+Since there are $2F+1$ honest processes, at least $F+1$ honest classifications constitute a majority of honest processes. 
 Therefore, a proposer can only be adopted as \textit{fast} (resp., \textit{slow}) if a majority of honest processes classified it as \textit{fast} (resp., \textit{slow}).
 
 %\subsection{Correctness}

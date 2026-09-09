@@ -14,7 +14,7 @@ Nodes communicate by message passing.
 The system is partially synchronous: it is initially asynchronous when there is no bound on message delays or relative process speeds.
 At an unknown moment (i.e., the Global Stabilization Time), the system becomes synchronous, when message delays and processing speed become bounded.
 
-There are up to $f < N/3$ \emph{faulty} or Byzantine nodes; the remaining nodes are \emph{honest}.
+There are up to $F < N/3$ \emph{faulty} or Byzantine nodes; the remaining nodes are \emph{honest}.
 Faulty nodes can deviate from their specifications, whereas honest nodes adhere to them.
 Cryptographic techniques are used, with adversaries not having (with high probability) the computational power to subvert them.
 
@@ -23,7 +23,35 @@ Cryptographic techniques are used, with adversaries not having (with high probab
 \label{tenderback}
 
 We consider permissioned consensus protocols, such as Practical Byzantine Fault Tolerance (PBFT)~\cite{castro1999practical} and Tendermint~\cite{buchman2016tendermint}.
-Tendermint consensus operates through three sequential phases, \emph{propose}, \emph{prevote}, and \emph{precommit}, which functionally correspond to the \emph{pre-prepare}, \emph{prepare}, and \emph{commit} stages of the PBFT algorithm. 
+Tendermint consensus operates through three sequential phases, \emph{propose}, \emph{prevote}, and \emph{precommit}, which functionally correspond to the \emph{pre-prepare}, \emph{prepare}, and \emph{commit} stages of the PBFT algorithm. The three phases work as follows: 
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.8\textwidth]{img/tendermint.png}}
+\caption{Basic Tendermint operation \cite{buchman2016tendermint}}
+%\label{Idur}
+\end{figure}
+
+
+\begin{itemize}
+    \item \textbf{Propose}
+
+    The deterministic leader selection function indicates to each node which member of the committee is the current proposer. If a node determines that it is the leader of the current consensus instance it must generate a block, based on its received transactions, and propose it to the network. 
+    
+    \item \textbf{Prevote}
+
+    Once a node receives a proposal it analyzes the block's validity. If the block is valid and was sent from the correct proposer, the node agrees with the proposal and broadcasts a prevote for the block. If the block is invalid, the node prevotes nil. 
+
+    As proposers may not send proposals in a timely manner, due to network issues or Byzantine faults, Tendermint makes use of timeouts. After processing the block, each node awaits a dynamic time interval. If the proposal is not received within this interval, the node automatically prevotes nil. This timeout is calculated locally according to pre-defined rules, allowing liveness to be maintained as long as the model assumptions hold. 
+
+    After sending its prevote, each node awaits for a quorum. If the node receives a quorum of prevotes for the block, it precommits the block. In any other case, including if the node times out when waiting for a quorum, the node precommits nil. 
+    
+    \item \textbf{Precommit}
+
+    The precommit phases begins as soon as the node broadcasts its precommit value. If the node receives a quorum of precommits for the block, the block is considered committed and appended to the chain. Otherwise, if a quorum cannot be reached or if the node timeouts, consensus restarts with the next proposer. 
+
+\end{itemize}
+
+
 A primary distinction of Tendermint is the implementation of a rotating proposer mechanism: by using a round-robin approach in which each node proposes only once, the network mitigates censorship \cite{wahrstatter2024blockchain}. % and ensures that an honest proposer eventually assumes leadership. 
 
 Furthermore, unlike PBFT, Tendermint is designed for environments where unknown participants can join. To protect against Sybil attacks\cite{douceur2002sybil}, where a malicious actor might otherwise flood the network with nodes to gain control, the protocol integrates a Proof of Stake (PoS) mechanism. %This economic barrier shifts this is the last candidate.  next esc will revert to uncompleted text. he security assumption from a count of nodes to a distribution of wealth: the system remains secure as long as less than one-third of the total staked tokens are held by Byzantine actors. 
