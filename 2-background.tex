@@ -23,31 +23,34 @@ Cryptographic techniques are used, with adversaries not having (with high probab
 \label{tenderback}
 
 We consider permissioned consensus protocols, such as Practical Byzantine Fault Tolerance (PBFT)~\cite{castro1999practical} and Tendermint~\cite{buchman2016tendermint}.
-Tendermint consensus operates through three sequential phases, \emph{propose}, \emph{prevote}, and \emph{precommit}, which functionally correspond to the \emph{pre-prepare}, \emph{prepare}, and \emph{commit} stages of the PBFT algorithm. The three phases work as follows: 
+Tendermint consensus operates through three sequential phases, \emph{propose}, \emph{prevote} and \emph{precommit}, which functionally correspond to the \emph{pre-prepare}, \emph{prepare}, and \emph{commit} stages of the PBFT algorithm. The three phases work as follows: 
 
-\begin{figure}[htbp]
-\centerline{\includegraphics[width=0.8\textwidth]{img/tendermint.png}}
-\caption{Basic Tendermint operation \cite{buchman2016tendermint}}
+%\begin{figure}[htbp]
+%\centerline{\includegraphics[width=0.8\textwidth]{img/tendermint.png}}
+%\caption{Basic Tendermint operation \cite{buchman2016tendermint}}
 %\label{Idur}
-\end{figure}
+%\end{figure}
 
 
 \begin{itemize}
     \item \textbf{Propose}
 
-    The deterministic leader selection function indicates to each node which member of the committee is the current proposer. If a node determines that it is the leader of the current consensus instance it must generate a block, based on its received transactions, and propose it to the network. 
+    The deterministic leader selection function indicates to each node which member of the committee is the current proposer. If a node determines that it is the leader of the current consensus instance it must generate a block, based on its received transactions, and propose it to the network.    Other nodes await the proposal.
     
     \item \textbf{Prevote}
 
     Once a node receives a proposal it analyzes the block's validity. If the block is valid and was sent from the correct proposer, the node agrees with the proposal and broadcasts a prevote for the block. If the block is invalid, the node prevotes nil. 
 
-    As proposers may not send proposals in a timely manner, due to network issues or Byzantine faults, Tendermint makes use of timeouts. After processing the block, each node awaits a dynamic time interval. If the proposal is not received within this interval, the node automatically prevotes nil. This timeout is calculated locally according to pre-defined rules, allowing liveness to be maintained as long as the model assumptions hold. 
+    As proposers may not send proposals in a timely manner, due to network issues or Byzantine faults, Tendermint makes use of timeouts. After processing a block, each node awaits a dynamic time interval for the next proposal.  If it is not received within this interval, the node automatically prevotes nil. This timeout is calculated locally according to pre-defined rules, allowing liveness to be maintained as long as the model assumptions hold. 
 
-    After sending its prevote, each node awaits for a quorum. If the node receives a quorum of prevotes for the block, it precommits the block. In any other case, including if the node times out when waiting for a quorum, the node precommits nil. 
+ After sending its prevote, each node awaits for a quorum. If the node receives a quorum of prevotes for the block, 
+ it broadcasts a precommit for the block.   In any other case, including if the node times out when waiting for a quorum, the node 
+ broadcasts precommits nil. 
     
     \item \textbf{Precommit}
 
-    The precommit phases begins as soon as the node broadcasts its precommit value. If the node receives a quorum of precommits for the block, the block is considered committed and appended to the chain. Otherwise, if a quorum cannot be reached or if the node timeouts, consensus restarts with the next proposer. 
+The precommit phases begins as soon as the node broadcasts a precommit value. If the node receives a quorum of precommits for the block, the block is considered committed and appended to the chain, and consensus for the next block (height) is started.
+ Otherwise, if a quorum cannot be reached or if the node timeouts, consensus restarts with the next proposer, in the same height but increasing round. 
 
 \end{itemize}
 
@@ -81,20 +84,6 @@ These approaches remove nodes considered slow, unstable, or suspicious from the 
 While effective at increasing throughput in controlled environments, committee reduction introduces a direct trade-off between performance and Byzantine resilience. Removing slow but correct nodes reduces the effective committee size, thereby lowering the maximum number of Byzantine faults the system can tolerate. 
 Moreover, modern blockchain deployments already incorporate mechanisms to detect and exclude malicious validators, making additional performance-oriented eviction layers potentially redundant and operationally risky.
 
-
-The surveyed literature also differs in how it treats proposer fairness. 
-Many PBFT-derived optimizations effectively converge toward fixed or weakly rotating leaders, increasing susceptibility to censorship and centralization. 
-%Yu et al. \cite{yu2024adaptive} partially address this issue by enforcing equal rotation among nodes above a performance threshold. 
-Our approach instead adopts proportional prioritization: higher-performing nodes are selected more frequently, while all nodes remain eligible proposers. This preserves continuous rotation while still exploiting topology-aware performance asymmetries.
-%[OUR APPROACH CAN, DEPENDING ON THE CONFIGURED VALUES (E.G. ALLOWING SCORE TO BE UP TO +-100\% OF STAKE), REMOVE NODES FROM ROTATION (BUT KEEP THEM IN THE COMMITTEE). THIS IS INTENTIONAL AND ALLOWS FOR MAXIMUM THROUGHPUT AT THE COST OF CENSORSHIP RESILIENCE]
-
-Finally, existing work generally treats proposer performance as an abstract property associated with computational speed or node responsiveness, with limited investigation into how network topology shapes consensus execution. 
-Our experiments show that proposer placement directly affects overall consensus latency, influencing the duration of subsequent protocol phases. 
-In geo-distributed deployments, proposer location therefore becomes a first-order determinant of consensus efficiency rather than merely a secondary implementation detail.
-
-Table~\ref{related} highlights two dominant trends in prior work: (i) performance optimization through committee reduction, and (ii) tightly coupled protocol-specific leader management. 
-Our approach differs in that it preserves the full committee and the original Byzantine threshold while continuously adapting proposer frequency based on observed consensus performance. 
-Unlike eviction-based strategies, proposer prioritization improves throughput without sacrificing resilience or requiring invasive protocol modifications.
 
 %\vspace{-3mm}
 \begin{table}[h!]
@@ -235,6 +224,22 @@ P\\
 
 \end{threeparttable}
 \end{table} 
+
+The surveyed literature also differs in how it treats proposer fairness. 
+Many PBFT-derived optimizations effectively converge toward fixed or weakly rotating leaders, increasing susceptibility to censorship and centralization. 
+%Yu et al. \cite{yu2024adaptive} partially address this issue by enforcing equal rotation among nodes above a performance threshold. 
+Our approach instead adopts proportional prioritization: higher-performing nodes are selected more frequently, while all nodes remain eligible proposers. This preserves continuous rotation while still exploiting topology-aware performance asymmetries.
+%[OUR APPROACH CAN, DEPENDING ON THE CONFIGURED VALUES (E.G. ALLOWING SCORE TO BE UP TO +-100\% OF STAKE), REMOVE NODES FROM ROTATION (BUT KEEP THEM IN THE COMMITTEE). THIS IS INTENTIONAL AND ALLOWS FOR MAXIMUM THROUGHPUT AT THE COST OF CENSORSHIP RESILIENCE]
+
+Finally, existing work generally treats proposer performance as an abstract property associated with computational speed or node responsiveness, with limited investigation into how network topology shapes consensus execution. 
+Our experiments show that proposer placement directly affects overall consensus latency, influencing the duration of subsequent protocol phases. 
+In geo-distributed deployments, proposer location therefore becomes a first-order determinant of consensus efficiency rather than merely a secondary implementation detail.
+
+Table~\ref{related} highlights two dominant trends in prior work: (i) performance optimization through committee reduction, and (ii) tightly coupled protocol-specific leader management. 
+Our approach differs in that it preserves the full committee and the original Byzantine threshold while continuously adapting proposer frequency based on observed consensus performance. 
+Unlike eviction-based strategies, proposer prioritization improves throughput without sacrificing resilience or requiring invasive protocol modifications.
+
+
 
 %This reliance on PBFT also creates an evaluation gap in the literature. 
 %%Existing comparisons frequently focus on legacy PBFT baselines under heavy Byzantine attacks. Consequently, 

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.7.20)  14 JUL 2026 16:27
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020) (preloaded format=xelatex 2020.7.20)  10 SEP 2026 12:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -628,14 +628,11 @@ LaTeX Info: Redefining \nameref on input line 42.
 \@outlinefile=\write3
 \openout3 = `0-main.out'.
 
-
-
-Package hyperref Warning: Rerun to get /PageLabels entry.
-
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: threeparttable package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 70.
+
 
 (/usr/local/texlive/2020/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
@@ -661,22 +658,12 @@ a shorter form with \titlerunning prior to \maketitle
 (./1-introduction.tex [1
 
 ]) (./2-background.tex [2]
-Overfull \hbox (4.76392pt too wide) in paragraph at lines 25--28
+Overfull \hbox (4.76392pt too wide) in paragraph at lines 25--27
 \T1/lmr/m/n/10 Tol-er-ance (PBFT) [[]2[]] and Ten-der-mint [[]1[]]. Ten-der-min
 t con-sen-sus op-er-ates through
  []
 
-[3]
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-) (./3-impactStudy.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5]
+[3] [4] [5]) (./3-impactStudy.tex [6]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 37.
 
@@ -687,8 +674,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 88--88
 
 File: svgi/10xblocktimeDurationsLeader.svg.png Graphic file (type bmp)
 <svgi/10xblocktimeDurationsLeader.svg.png>
-[6] [7]) (./4-algorithm.tex [8] [9] [10] [11]) (./5-conclusions.tex [12])
-(./0-main.bbl [13]
+[7]
+Underfull \vbox (badness 4819) has occurred while \output is active []
+
+ [8])
+(./4-algorithm.tex [9] [10] [11] [12]) (./5-conclusions.tex [13]) (./0-main.bbl
+
 Underfull \hbox (badness 1043) in paragraph at lines 37--41
 []\T1/lmr/m/n/9 Kruskal, W.H., Wal-lis, W.A.: Use of ranks in one-criterion var
 i-ance anal-
@@ -700,34 +691,24 @@ Underfull \hbox (badness 4859) in paragraph at lines 37--41
 \T1/lmr/bx/n/9 47\T1/lmr/m/n/9 (260), 583--621
  []
 
-)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 141.
- [14]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 141.
+[14])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 146.
+ [15]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 146.
  (./0-main.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 141.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 141.
-
-
-Package rerunfilecheck Warning: File `0-main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `0-main.out':
-(rerunfilecheck)             Before: B9D54DFF0D71A603AD352CE421D6EBA5;476
-(rerunfilecheck)             After:  BCA6ECAAD74781451AAACDEB60B60E67;148.
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 141.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 146.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 146.
+Package rerunfilecheck Info: File `0-main.out' has not changed.
+(rerunfilecheck)             Checksum: BCA6ECAAD74781451AAACDEB60B60E67;148.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 146.
  ) 
 Here is how much of TeX's memory you used:
- 13954 strings out of 479418
- 205873 string characters out of 5884585
- 514561 words of memory out of 5000000
- 31222 multiletter control sequences out of 15000+600000
+ 13949 strings out of 479418
+ 205779 string characters out of 5884585
+ 511681 words of memory out of 5000000
+ 31217 multiletter control sequences out of 15000+600000
  587931 words of font info for 66 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  43i,18n,52p,905b,493s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on 0-main.pdf (14 pages).
+Output written on 0-main.pdf (15 pages).
